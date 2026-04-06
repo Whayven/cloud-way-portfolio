@@ -10,10 +10,23 @@ import {
 } from "@/app/_components/catalyst/description-list"
 
 export default async function AdminDashboard() {
-  const [portfolioCount, publishedCount, messageCount] = await Promise.all([
+  const [
+    portfolioCount,
+    publishedCount,
+    messageCount,
+    announcementCount,
+    activeAnnouncementCount,
+  ] = await Promise.all([
     prisma.portfolioItem.count(),
     prisma.portfolioItem.count({ where: { status: ContentStatus.published } }),
     prisma.contactMessage.count(),
+    prisma.announcement.count(),
+    prisma.announcement.count({
+      where: {
+        status: ContentStatus.published,
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+      },
+    }),
   ])
 
   return (
@@ -34,6 +47,16 @@ export default async function AdminDashboard() {
             <DescriptionDetails>
               {portfolioCount - publishedCount}
             </DescriptionDetails>
+          </DescriptionList>
+        </div>
+
+        <div>
+          <Subheading>Announcements</Subheading>
+          <DescriptionList className="mt-4">
+            <DescriptionTerm>Total</DescriptionTerm>
+            <DescriptionDetails>{announcementCount}</DescriptionDetails>
+            <DescriptionTerm>Active</DescriptionTerm>
+            <DescriptionDetails>{activeAnnouncementCount}</DescriptionDetails>
           </DescriptionList>
         </div>
 

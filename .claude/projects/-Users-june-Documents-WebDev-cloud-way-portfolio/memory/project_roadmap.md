@@ -11,16 +11,16 @@ Agreed-upon roadmap for the CloudWay portfolio site (2026-04-05):
 - Add sitemap.ts, robots.ts, proper metadata on all pages
 - Render portfolio imageUrl on work cards
 
-**Phase 2 — Admin foundation**
-- /admin routes with auth gate
+**Phase 2 — Admin foundation** (DONE 2026-04-05)
+- /admin routes with auth gate (JWT via jose, env-based password)
 - Portfolio CRUD (PortfolioItem)
-- Contact inbox (read/archive ContactMessages)
-- Use Catalyst UI kit for admin
+- Contact inbox (read/delete ContactMessages)
+- Catalyst SidebarLayout admin shell
 
-**Phase 3 — Announcements**
-- New Announcement model (title, body, type, publishedAt, expiresAt, status)
+**Phase 3 — Announcements** (DONE 2026-04-05)
+- Announcement model with AnnouncementType enum (info/warning/success)
 - Admin CRUD for announcements
-- Banner/toast on marketing site for active announcements
+- Dismissible banner on marketing site for active announcements
 
 **Phase 4 — Blog**
 - Admin CRUD for BlogPost (model already exists in schema)

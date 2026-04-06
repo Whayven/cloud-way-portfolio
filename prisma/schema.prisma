@@ -14,6 +14,12 @@ enum ContentStatus {
   published
 }
 
+enum AnnouncementType {
+  info
+  warning
+  success
+}
+
 model BlogPost {
   id          String        @id @default(uuid())
   slug        String        @unique
@@ -44,6 +50,20 @@ model PortfolioItem {
   updatedAt   DateTime      @updatedAt
 
   @@index([status, sortOrder])
+}
+
+model Announcement {
+  id          String           @id @default(uuid())
+  title       String
+  body        String           @db.Text
+  type        AnnouncementType @default(info)
+  publishedAt DateTime?
+  expiresAt   DateTime?
+  status      ContentStatus    @default(draft)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([status, publishedAt, expiresAt])
 }
 
 model ContactMessage {

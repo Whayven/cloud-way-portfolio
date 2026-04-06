@@ -17,6 +17,7 @@ import {
   HomeIcon,
   FolderIcon,
   EnvelopeIcon,
+  MegaphoneIcon,
   ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/20/solid"
 
@@ -48,6 +49,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               >
                 <FolderIcon />
                 <SidebarLabel>Portfolio</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem
+                href="/admin/announcements"
+                current={pathname.startsWith("/admin/announcements")}
+              >
+                <MegaphoneIcon />
+                <SidebarLabel>Announcements</SidebarLabel>
               </SidebarItem>
               <SidebarItem
                 href="/admin/messages"

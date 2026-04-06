@@ -1,7 +1,28 @@
 "use client"
 
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { GradientText } from "@/components/site/gradient-text"
+import { ChevronLeftIcon, ChevronRightIcon, MegaphoneIcon } from "@heroicons/react/20/solid"
+
+type Announcement = {
+  id: string
+  title: string
+  body: string
+  type: "info" | "warning" | "success"
+}
+
+const typeAccent = {
+  info: "text-sky-400",
+  warning: "text-amber-400",
+  success: "text-emerald-400",
+}
+
+const typeBorder = {
+  info: "border-sky-400/30",
+  warning: "border-amber-400/30",
+  success: "border-emerald-400/30",
+}
 
 const stats = [
   {
@@ -62,7 +83,48 @@ const stars = [
   { x: 58, y: 58, size: 1, delay: 1.4, duration: 3.9 },
 ]
 
-export function HeroSection() {
+type CardSlide =
+  | { kind: "stat"; title: string; description: string; icon: React.ReactNode }
+  | { kind: "announcement"; announcement: Announcement }
+
+export function HeroSection({
+  announcements = [],
+}: {
+  announcements?: Announcement[]
+}) {
+  const slides: CardSlide[] = [
+    ...announcements.map(
+      (a) => ({ kind: "announcement" as const, announcement: a }),
+    ),
+    ...stats.map((s) => ({ kind: "stat" as const, ...s })),
+  ]
+
+  // Show 3 cards at a time, paginate through groups
+  const pageSize = 3
+  const totalPages = Math.ceil(slides.length / pageSize)
+  const [page, setPage] = useState(0)
+
+  const next = useCallback(
+    () => setPage((p) => (p + 1) % totalPages),
+    [totalPages],
+  )
+  const prev = useCallback(
+    () => setPage((p) => (p - 1 + totalPages) % totalPages),
+    [totalPages],
+  )
+
+  // Auto-advance every 5s when there are multiple pages
+  useEffect(() => {
+    if (totalPages <= 1) return
+    const id = setInterval(next, 5000)
+    return () => clearInterval(id)
+  }, [totalPages, next])
+
+  const visibleSlides = slides.slice(
+    page * pageSize,
+    page * pageSize + pageSize,
+  )
+
   return (
     <section className="relative isolate flex min-h-[calc(100vh-4.5rem)] w-full items-center overflow-hidden">
 
@@ -115,25 +177,77 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Right: glassmorphism stat cards */}
-        <div className="hidden flex-col gap-4 lg:flex">
-          {stats.map((stat, i) => (
-            <div
-              key={stat.title}
-              className="w-56 rounded-2xl border border-white/10 bg-white/5 p-5 opacity-0 backdrop-blur-xl animate-[fadeSlideLeft_0.6s_ease-out_forwards] hover:border-white/20 hover:bg-white/10 transition-all duration-300"
-              style={{
-                animationDelay: `${0.6 + i * 0.2}s`,
-              }}
-            >
-              <div className="mb-2 flex items-center gap-2.5 text-purple-400">
-                {stat.icon}
-                <h3 className="text-sm font-semibold text-white">{stat.title}</h3>
+        {/* Right: card carousel */}
+        <div className="hidden flex-col items-center gap-4 lg:flex">
+          <div className="flex flex-col gap-4">
+            {visibleSlides.map((slide, i) =>
+              slide.kind === "announcement" ? (
+                <div
+                  key={slide.announcement.id}
+                  className={`w-56 rounded-2xl border ${typeBorder[slide.announcement.type]} bg-white/5 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-white/10 animate-[fadeSlideLeft_0.4s_ease-out_forwards]`}
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                >
+                  <div className={`mb-2 flex items-center gap-2.5 ${typeAccent[slide.announcement.type]}`}>
+                    <MegaphoneIcon className="h-5 w-5" />
+                    <h3 className="text-sm font-semibold text-white">
+                      {slide.announcement.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs leading-relaxed text-gray-400">
+                    {slide.announcement.body}
+                  </p>
+                </div>
+              ) : (
+                <div
+                  key={slide.title}
+                  className="w-56 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-white/10 animate-[fadeSlideLeft_0.4s_ease-out_forwards]"
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                >
+                  <div className="mb-2 flex items-center gap-2.5 text-purple-400">
+                    {slide.icon}
+                    <h3 className="text-sm font-semibold text-white">{slide.title}</h3>
+                  </div>
+                  <p className="text-xs leading-relaxed text-gray-400">
+                    {slide.description}
+                  </p>
+                </div>
+              ),
+            )}
+          </div>
+
+          {/* Carousel controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center gap-3 opacity-0 animate-[fadeSlideUp_0.6s_ease-out_1s_forwards]">
+              <button
+                onClick={prev}
+                className="rounded-full border border-white/10 bg-white/5 p-1.5 text-gray-400 backdrop-blur-md transition-colors hover:border-white/20 hover:text-white"
+                aria-label="Previous cards"
+              >
+                <ChevronLeftIcon className="h-4 w-4" />
+              </button>
+              <div className="flex gap-1.5">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPage(i)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      i === page
+                        ? "w-4 bg-white"
+                        : "w-1.5 bg-white/30 hover:bg-white/50"
+                    }`}
+                    aria-label={`Page ${i + 1}`}
+                  />
+                ))}
               </div>
-              <p className="text-xs leading-relaxed text-gray-400">
-                {stat.description}
-              </p>
+              <button
+                onClick={next}
+                className="rounded-full border border-white/10 bg-white/5 p-1.5 text-gray-400 backdrop-blur-md transition-colors hover:border-white/20 hover:text-white"
+                aria-label="Next cards"
+              >
+                <ChevronRightIcon className="h-4 w-4" />
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </div>
 
