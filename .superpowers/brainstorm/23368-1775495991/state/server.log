@@ -1,8 +1,0 @@
-{"type":"server-started","port":55948,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:55948","screen_dir":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/content","state_dir":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/state"}
-{"type":"screen-added","file":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/content/card-layout.html"}
-{"type":"screen-updated","file":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/content/card-layout.html"}
-{"type":"screen-updated","file":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/content/card-layout.html"}
-{"source":"user-event","type":"click","text":"Cover Image\n          \n          \n          \n            SaaS Platform\n            Project Title\n            Brief project summary goes here...\n            \n              React\n              Node\n            \n          \n        \n      \n    \n    \n      A: Vertical Card with Image\n      Image on top, content below. Works great in a 2 or 3-column grid. Showcases project visuals prominently.","choice":"a","id":null,"timestamp":1775496085591}
-{"type":"screen-added","file":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/content/waiting.html"}
-{"type":"screen-updated","file":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/content/waiting.html"}
-{"type":"screen-updated","file":"/Users/june/Documents/WebDev/cloud-way-portfolio/.superpowers/brainstorm/23368-1775495991/content/waiting.html"}
