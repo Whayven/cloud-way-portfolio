@@ -1,0 +1,87 @@
+<h2>Card Layout Direction</h2>
+<p class="subtitle">How should each portfolio item be presented?</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0;min-height:280px;">
+        <div class="mockup-body" style="padding:0;display:flex;flex-direction:column;height:100%;">
+          <!-- Image area -->
+          <div style="background:linear-gradient(135deg,#38bdf8 0%,#a855f7 100%);height:160px;display:flex;align-items:center;justify-content:center;border-radius:8px 8px 0 0;">
+            <span style="color:white;opacity:0.6;font-size:14px;">Cover Image</span>
+          </div>
+          <!-- Content area -->
+          <div style="padding:16px;flex:1;">
+            <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">SaaS Platform</div>
+            <div style="font-weight:600;color:white;margin-bottom:8px;">Project Title</div>
+            <div style="font-size:13px;color:#999;margin-bottom:12px;">Brief project summary goes here...</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span style="background:rgba(168,85,247,0.3);color:#c084fc;padding:2px 8px;border-radius:99px;font-size:11px;">React</span>
+              <span style="background:rgba(56,189,248,0.3);color:#7dd3fc;padding:2px 8px;border-radius:99px;font-size:11px;">Node</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A: Vertical Card with Image</h3>
+      <p>Image on top, content below. Works great in a 2 or 3-column grid. Showcases project visuals prominently.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0;min-height:280px;">
+        <div class="mockup-body" style="padding:0;height:100%;">
+          <div style="display:flex;height:100%;border-radius:8px;overflow:hidden;">
+            <!-- Left content -->
+            <div style="flex:1;padding:20px;display:flex;flex-direction:column;justify-content:center;">
+              <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">SaaS Platform</div>
+              <div style="font-weight:700;font-size:18px;color:white;margin-bottom:10px;">Project Title</div>
+              <div style="font-size:13px;color:#999;margin-bottom:14px;line-height:1.5;">Brief project summary goes here with a bit more detail...</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <span style="background:rgba(168,85,247,0.3);color:#c084fc;padding:2px 8px;border-radius:99px;font-size:11px;">React</span>
+                <span style="background:rgba(56,189,248,0.3);color:#7dd3fc;padding:2px 8px;border-radius:99px;font-size:11px;">Node</span>
+              </div>
+            </div>
+            <!-- Right image -->
+            <div style="width:45%;background:linear-gradient(135deg,#38bdf8 0%,#a855f7 100%);display:flex;align-items:center;justify-content:center;">
+              <span style="color:white;opacity:0.6;font-size:14px;">Cover Image</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B: Horizontal Card (Refined)</h3>
+      <p>Similar to current layout but polished — content left, image right. Full-width rows, one card per row. More editorial feel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0;min-height:280px;">
+        <div class="mockup-body" style="padding:0;height:100%;position:relative;">
+          <!-- Full background image -->
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#38bdf8 0%,#a855f7 100%);border-radius:8px;"></div>
+          <!-- Gradient overlay -->
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(19,21,26,0.95) 0%,rgba(19,21,26,0.4) 50%,transparent 100%);border-radius:8px;"></div>
+          <!-- Content at bottom -->
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;">
+            <div style="font-size:11px;color:#ccc;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">SaaS Platform</div>
+            <div style="font-weight:700;font-size:18px;color:white;margin-bottom:8px;">Project Title</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Brief project summary goes here...</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span style="background:rgba(255,255,255,0.15);color:white;padding:2px 8px;border-radius:99px;font-size:11px;backdrop-filter:blur(4px);">React</span>
+              <span style="background:rgba(255,255,255,0.15);color:white;padding:2px 8px;border-radius:99px;font-size:11px;backdrop-filter:blur(4px);">Node</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C: Image Overlay Card</h3>
+      <p>Full-bleed image with gradient overlay and text at bottom. Dramatic and visual-forward. Works in a grid or stacked.</p>
+    </div>
+  </div>
+</div>

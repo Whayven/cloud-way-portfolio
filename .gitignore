@@ -50,3 +50,4 @@ next-env.d.ts
 # Local tool caches (optional npm / prisma HOME overrides)
 .npm-cache
 .sandbox-home
+.superpowers/
