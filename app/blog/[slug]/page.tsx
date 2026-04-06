@@ -40,25 +40,37 @@ export default async function BlogPostPage({
   return (
     <div className="min-h-screen bg-cw-dark">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-16 sm:px-8 lg:px-10">
+
+      <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-20 sm:px-8 lg:px-10">
+        {/* Back link */}
         <Link
           href="/blog"
-          className="text-sm text-gray-500 transition-colors hover:text-white"
+          className="group inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-white"
         >
-          &larr; Back to blog
+          <span className="inline-block transition-transform duration-200 group-hover:-translate-x-0.5">&larr;</span>
+          Back to blog
         </Link>
-        <article className="mt-8">
-          {post.publishedAt && (
-            <time className="text-sm text-gray-500">
-              {formatDate(post.publishedAt)}
-            </time>
-          )}
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            {post.title}
-          </h1>
-          <p className="mt-4 text-lg text-gray-400">{post.excerpt}</p>
+
+        <article className="mt-10">
+          {/* Header */}
+          <header>
+            {post.publishedAt && (
+              <time className="text-xs font-medium uppercase tracking-widest text-gray-500">
+                {formatDate(post.publishedAt)}
+              </time>
+            )}
+            <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
+              {post.title}
+            </h1>
+            <p className="mt-4 text-lg leading-relaxed text-gray-400">
+              {post.excerpt}
+            </p>
+            <div className="mt-8 h-px bg-linear-to-r from-purple-400/30 via-white/10 to-transparent" />
+          </header>
+
+          {/* Cover image */}
           {post.coverImage && (
-            <div className="relative mt-8 aspect-video overflow-hidden rounded-xl">
+            <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-white/10">
               <Image
                 src={post.coverImage}
                 alt={post.title}
@@ -69,8 +81,22 @@ export default async function BlogPostPage({
               />
             </div>
           )}
-          <div className="mt-10">
+
+          {/* Body */}
+          <div className="mt-12">
             <BlogBody content={post.body} />
+          </div>
+
+          {/* Footer divider + back */}
+          <div className="mt-16 h-px bg-linear-to-r from-purple-400/30 via-white/10 to-transparent" />
+          <div className="mt-8">
+            <Link
+              href="/blog"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-purple-400 transition-colors hover:text-purple-300"
+            >
+              <span className="inline-block transition-transform duration-200 group-hover:-translate-x-0.5">&larr;</span>
+              All articles
+            </Link>
           </div>
         </article>
       </main>
