@@ -31,38 +31,97 @@ const stats = [
   },
 ]
 
+/* Deterministic star positions — generated once at build time */
+const stars = [
+  { x: 5, y: 8, size: 1, delay: 0, duration: 3 },
+  { x: 12, y: 15, size: 1.5, delay: 1.2, duration: 4 },
+  { x: 25, y: 5, size: 1, delay: 0.5, duration: 3.5 },
+  { x: 30, y: 22, size: 2, delay: 2, duration: 5 },
+  { x: 35, y: 70, size: 1, delay: 0.8, duration: 3 },
+  { x: 40, y: 45, size: 1.5, delay: 1.5, duration: 4.5 },
+  { x: 48, y: 12, size: 1, delay: 0.3, duration: 3.2 },
+  { x: 55, y: 80, size: 2, delay: 2.5, duration: 5 },
+  { x: 60, y: 30, size: 1, delay: 1, duration: 3.8 },
+  { x: 65, y: 55, size: 1.5, delay: 0.7, duration: 4.2 },
+  { x: 72, y: 18, size: 1, delay: 1.8, duration: 3 },
+  { x: 78, y: 65, size: 2, delay: 0.2, duration: 4.8 },
+  { x: 82, y: 40, size: 1, delay: 2.2, duration: 3.5 },
+  { x: 88, y: 8, size: 1.5, delay: 1.3, duration: 4 },
+  { x: 92, y: 75, size: 1, delay: 0.6, duration: 3.3 },
+  { x: 15, y: 88, size: 1.5, delay: 1.9, duration: 4.5 },
+  { x: 45, y: 92, size: 1, delay: 0.4, duration: 3.7 },
+  { x: 70, y: 85, size: 2, delay: 2.8, duration: 5 },
+  { x: 95, y: 50, size: 1, delay: 1.1, duration: 3.1 },
+  { x: 8, y: 42, size: 1.5, delay: 2.3, duration: 4.3 },
+  { x: 20, y: 60, size: 1, delay: 0.9, duration: 3.6 },
+  { x: 50, y: 35, size: 2, delay: 1.6, duration: 4.8 },
+  { x: 85, y: 25, size: 1, delay: 2.1, duration: 3.4 },
+  { x: 3, y: 72, size: 1.5, delay: 0.1, duration: 4.1 },
+  { x: 58, y: 58, size: 1, delay: 1.4, duration: 3.9 },
+]
+
 export function HeroSection() {
   return (
     <section className="relative isolate flex min-h-screen w-full items-center overflow-hidden">
 
-      {/* Content */}
+      {/* ── Star field ── */}
+      <div className="pointer-events-none absolute inset-0 z-[2]" aria-hidden>
+        {stars.map((star, i) => (
+          <span
+            key={i}
+            className="absolute rounded-full bg-white animate-[twinkle_var(--tw-duration)_ease-in-out_var(--tw-delay)_infinite]"
+            style={{
+              left: `${star.x}%`,
+              top: `${star.y}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              "--tw-delay": `${star.delay}s`,
+              "--tw-duration": `${star.duration}s`,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      {/* ── Shooting stars ── */}
+      <div className="pointer-events-none absolute inset-0 z-[2]" aria-hidden>
+        <span className="absolute left-[15%] top-[10%] h-px w-20 rotate-[215deg] animate-[shoot_6s_ease-in_2s_infinite] rounded bg-linear-to-r from-white/80 to-transparent opacity-0" />
+        <span className="absolute left-[60%] top-[5%] h-px w-28 rotate-[220deg] animate-[shoot_8s_ease-in_5s_infinite] rounded bg-linear-to-r from-white/70 to-transparent opacity-0" />
+        <span className="absolute left-[40%] top-[15%] h-px w-16 rotate-[210deg] animate-[shoot_7s_ease-in_8s_infinite] rounded bg-linear-to-r from-white/60 to-transparent opacity-0" />
+      </div>
+
+      {/* ── Content ── */}
       <div className="relative z-10 mx-auto flex w-full max-w-[85rem] items-center justify-between px-6 py-32 sm:px-10">
         {/* Left: headline + CTA */}
         <div className="max-w-2xl">
-          <h1 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-white opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.2s_forwards] sm:text-5xl md:text-6xl lg:text-7xl">
             We are <GradientText className="inline">CloudWay</GradientText>.
           </h1>
-          <p className="mb-10 max-w-lg text-lg text-gray-400 sm:text-xl">
+          <p className="mb-10 max-w-lg text-lg text-gray-400 opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.5s_forwards] sm:text-xl">
             Elevate your business with our cutting-edge software
             solutions and space-age design.
           </p>
-          <Link
-            href="/work"
-            className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10"
-          >
-            View Work
-            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1" aria-hidden>
-              &rsaquo;
-            </span>
-          </Link>
+          <div className="opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.8s_forwards]">
+            <Link
+              href="/work"
+              className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(56,189,248,0.15)]"
+            >
+              View Work
+              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1" aria-hidden>
+                &rsaquo;
+              </span>
+            </Link>
+          </div>
         </div>
 
         {/* Right: glassmorphism stat cards */}
         <div className="hidden flex-col gap-4 lg:flex">
-          {stats.map((stat) => (
+          {stats.map((stat, i) => (
             <div
               key={stat.title}
-              className="w-56 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl"
+              className="w-56 rounded-2xl border border-white/10 bg-white/5 p-5 opacity-0 backdrop-blur-xl animate-[fadeSlideLeft_0.6s_ease-out_forwards] hover:border-white/20 hover:bg-white/10 transition-all duration-300"
+              style={{
+                animationDelay: `${0.6 + i * 0.2}s`,
+              }}
             >
               <div className="mb-2 flex items-center gap-2.5 text-accent-sky-light">
                 {stat.icon}
@@ -76,8 +135,12 @@ export function HeroSection() {
         </div>
       </div>
 
+      {/* ── Ambient glow ── */}
+      <div className="pointer-events-none absolute left-1/4 top-1/3 z-[1] h-96 w-96 rounded-full bg-purple-600/10 blur-[120px] animate-[pulse_8s_ease-in-out_infinite]" aria-hidden />
+      <div className="pointer-events-none absolute right-1/4 bottom-1/4 z-[1] h-80 w-80 rounded-full bg-sky-500/10 blur-[100px] animate-[pulse_10s_ease-in-out_2s_infinite]" aria-hidden />
+
       {/* Social icons — bottom left */}
-      <div className="absolute bottom-8 left-6 z-10 flex items-center gap-4 sm:left-10">
+      <div className="absolute bottom-8 left-6 z-10 flex items-center gap-4 opacity-0 animate-[fadeSlideUp_0.6s_ease-out_1.2s_forwards] sm:left-10">
         <a
           href="https://twitter.com"
           target="_blank"
