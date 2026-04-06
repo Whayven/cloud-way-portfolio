@@ -13,20 +13,20 @@ const nav = [
 
 const linkClass = {
   primary:
-    "font-medium text-blue-400 transition-colors hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400",
+    "font-medium text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300",
   default:
-    "font-medium text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white",
+    "font-medium text-gray-600 transition-colors hover:text-cw-dark dark:text-gray-400 dark:hover:text-white",
 } as const
 
 export function SiteHeader() {
   return (
-    <header className="z-50 w-full bg-cw-light py-4 text-sm dark:bg-transparent">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200/70 bg-cw-light/85 backdrop-blur-md dark:border-white/10 dark:bg-cw-dark/80">
       <nav
-        className="mx-auto flex w-full max-w-[85rem] flex-wrap items-center justify-between px-4 sm:flex-nowrap"
+        className="mx-auto flex w-full max-w-[85rem] flex-wrap items-center justify-between gap-4 px-5 py-3.5 sm:flex-nowrap sm:px-8"
         aria-label="Global"
       >
-        <Link href="/" className="flex items-center gap-2">
-          <span className="relative h-[50px] w-[180px]">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
+          <span className="relative h-11 w-[11.5rem] sm:h-12 sm:w-[12.5rem]">
             <span
               className="absolute inset-0 flex items-center font-bold tracking-tight"
               aria-hidden
@@ -65,9 +65,9 @@ export function SiteHeader() {
             <span className="sr-only">CloudWay</span>
           </span>
         </Link>
-        <ul className="mt-4 flex flex-wrap items-center gap-4 sm:mt-0 sm:ml-auto sm:gap-6">
+        <ul className="flex flex-wrap items-center gap-1 sm:gap-2">
           {nav.map((item) => {
-            const className = linkClass[item.variant]
+            const className = `${linkClass[item.variant]} rounded-lg px-3 py-2 text-sm`
             if ("external" in item && item.external) {
               return (
                 <li key={item.href}>

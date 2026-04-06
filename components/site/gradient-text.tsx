@@ -7,7 +7,7 @@ export function GradientText({
 }) {
   return (
     <span
-      className={`bg-gradient-to-r from-accent-sky to-accent-purple bg-clip-text text-transparent dark:bg-gradient-to-l dark:from-accent-sky dark:to-white ${className}`}
+      className={`bg-linear-to-r from-accent-sky to-accent-purple bg-clip-text text-transparent dark:bg-linear-to-l dark:from-accent-sky dark:to-white ${className}`.trim()}
     >
       {children}
     </span>

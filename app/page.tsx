@@ -12,17 +12,13 @@ export default function Home() {
   return (
     <>
       <SiteHeader />
-      <div className="flex-1 py-8">
-        <main className="mx-auto w-full max-w-[calc(100%-2rem)] text-lg leading-relaxed text-cw-dark dark:text-white sm:max-w-none sm:px-12 md:px-8 lg:w-3/5 lg:px-0">
-          <HeroSection />
-          <section className="mt-8">
-            <AboutSection />
-            <ServicesSection />
-            <WorkSection />
-            <ContactSection />
-          </section>
-        </main>
-      </div>
+      <HeroSection />
+      <main className="relative z-0 mx-auto w-full max-w-6xl px-6 pb-24 pt-16 text-base leading-relaxed text-cw-dark sm:px-8 lg:px-10 dark:text-white">
+        <AboutSection />
+        <ServicesSection />
+        <WorkSection />
+        <ContactSection />
+      </main>
       <SiteFooter />
     </>
   )

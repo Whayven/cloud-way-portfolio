@@ -1,9 +1,9 @@
 export function SiteFooter() {
   return (
-    <footer className="border-t border-gray-200 bg-white py-4 dark:border-gray-700 dark:bg-gray-800">
-      <div className="mx-auto flex w-full max-w-[85rem] flex-col items-center justify-between gap-4 px-4 sm:flex-row">
+    <footer className="border-t border-gray-200/80 bg-cw-light/90 py-8 dark:border-white/10 dark:bg-cw-dark/90">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 px-6 sm:flex-row sm:px-8">
         <svg
-          className="h-10 w-20"
+          className="h-10 w-20 shrink-0 opacity-90"
           viewBox="0 0 100 50"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -34,8 +34,8 @@ export function SiteFooter() {
             CW
           </text>
         </svg>
-        <p className="text-center text-sm text-gray-600 dark:text-gray-500">
-          © {new Date().getFullYear()} CloudWay. All Rights Reserved.
+        <p className="text-center text-sm text-gray-500 dark:text-gray-500">
+          © {new Date().getFullYear()} CloudWay. All rights reserved.
         </p>
       </div>
     </footer>
