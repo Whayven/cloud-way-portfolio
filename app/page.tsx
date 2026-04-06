@@ -33,7 +33,7 @@ export default function Home() {
       <div className="relative z-10">
         <SiteHeader />
         <HeroSection />
-        <main className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-16 text-base leading-relaxed text-white sm:px-8 lg:px-10">
+        <main id="content" className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-16 text-base leading-relaxed text-white sm:px-8 lg:px-10">
           <AboutSection />
           <ServicesSection />
           <WorkSection />

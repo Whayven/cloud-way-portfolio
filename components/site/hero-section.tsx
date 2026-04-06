@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { GradientText } from "@/components/site/gradient-text"
 
@@ -138,6 +140,22 @@ export function HeroSection() {
       {/* ── Ambient glow ── */}
       <div className="pointer-events-none absolute left-1/4 top-1/3 z-[1] h-96 w-96 rounded-full bg-purple-600/10 blur-[120px] animate-[pulse_8s_ease-in-out_infinite]" aria-hidden />
       <div className="pointer-events-none absolute right-1/4 bottom-1/4 z-[1] h-80 w-80 rounded-full bg-sky-500/10 blur-[100px] animate-[pulse_10s_ease-in-out_2s_infinite]" aria-hidden />
+
+      {/* ── Scroll indicator ── */}
+      <button
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 opacity-0 animate-[fadeSlideUp_0.6s_ease-out_1.4s_forwards]"
+        onClick={() =>
+          document.getElementById("content")?.scrollIntoView({ behavior: "smooth" })
+        }
+        aria-label="Scroll to content"
+      >
+        <span className="flex flex-col items-center gap-2 text-gray-400 transition-colors hover:text-white">
+          <span className="text-xs font-medium uppercase tracking-widest">Scroll</span>
+          <svg className="h-5 w-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </span>
+      </button>
 
       {/* Social icons — bottom left */}
       <div className="absolute bottom-8 left-6 z-10 flex items-center gap-4 opacity-0 animate-[fadeSlideUp_0.6s_ease-out_1.2s_forwards] sm:left-10">
