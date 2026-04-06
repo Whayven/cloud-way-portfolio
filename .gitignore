@@ -43,3 +43,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Prisma 7 generated client (see prisma/schema.prisma generator output)
+/lib/generated
+
+# Local tool caches (optional npm / prisma HOME overrides)
+.npm-cache
+.sandbox-home
