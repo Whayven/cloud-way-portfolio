@@ -54,7 +54,7 @@ export default async function WorkDetailPage({
 
           <article className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl sm:p-10">
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              <GradientText>{item.title}</GradientText>
+              <GradientText subtle>{item.title}</GradientText>
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-gray-400">
               {item.summary}

@@ -28,7 +28,7 @@ export default async function WorkPage() {
         <main className="mx-auto w-full max-w-6xl px-6 pb-24 pt-32 sm:px-8 lg:px-10">
           <div className="mb-16 text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              <GradientText>Our Work</GradientText>
+              <GradientText subtle>Our Work</GradientText>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">
               A selection of projects we&apos;ve built for clients and ourselves.
@@ -62,7 +62,7 @@ export default async function WorkPage() {
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col justify-center p-6 md:p-8">
                     <h2 className="text-xl font-semibold text-white">
-                      <GradientText>{item.title}</GradientText>
+                      <GradientText subtle>{item.title}</GradientText>
                     </h2>
                     <p className="mt-2 text-sm text-gray-400">
                       {item.summary}
