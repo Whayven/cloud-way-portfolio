@@ -31,7 +31,7 @@ export function ContactSection() {
               <DisclosureButton className="flex w-full items-center justify-between px-8 py-8 sm:px-10 sm:py-10">
                 <div className="text-left">
                   <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                    <span className="bg-linear-to-r from-sky-400 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+                    <span className="bg-linear-to-r from-white to-purple-400 bg-clip-text text-transparent">
                       Contact Us
                     </span>
                   </h2>

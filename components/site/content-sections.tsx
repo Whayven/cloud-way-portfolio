@@ -36,7 +36,7 @@ export function AboutSection() {
     <section className="border-t border-white/10 py-20 sm:py-24">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className={sectionTitle}>
-          <GradientText>About Us</GradientText>
+          <GradientText subtle>About Us</GradientText>
         </h2>
         <p className={`mx-auto mt-5 ${sectionLead}`}>
           We are a team of developers who are passionate about creating
@@ -63,7 +63,7 @@ export function AboutSection() {
             className="border-l-2 border-accent-sky-light/40 pl-6"
           >
             <h3 className="text-lg font-semibold text-white">
-              <GradientText>{block.title}</GradientText>
+              <GradientText subtle>{block.title}</GradientText>
             </h3>
             <p className="mt-2 text-gray-400">{block.body}</p>
           </li>
@@ -78,7 +78,7 @@ export function ServicesSection() {
     <section className="border-t border-white/10 py-20 sm:py-24">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className={sectionTitle}>
-          <GradientText>Our Services</GradientText>
+          <GradientText subtle>Our Services</GradientText>
         </h2>
         <p className={`mx-auto mt-5 ${sectionLead}`}>
           We offer a variety of services to help you build and grow your online
@@ -92,10 +92,10 @@ export function ServicesSection() {
             className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
           >
             <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
-              <Icon className="h-5 w-5 text-accent-sky-light" />
+              <Icon className="h-5 w-5 text-purple-400" />
             </div>
             <h3 className="text-lg font-semibold text-white">
-              <GradientText>{title}</GradientText>
+              <GradientText subtle>{title}</GradientText>
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-gray-400">
               {body}
@@ -117,7 +117,7 @@ export async function WorkSection() {
     <section className="border-t border-white/10 py-20 sm:py-24">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className={sectionTitle}>
-          <GradientText>Our Work</GradientText>
+          <GradientText subtle>Our Work</GradientText>
         </h2>
         <p className={`mx-auto mt-5 ${sectionLead}`}>
           We have worked on a variety of projects, from small websites to large
@@ -138,7 +138,7 @@ export async function WorkSection() {
             </div>
             <div className="flex min-w-0 flex-1 flex-col justify-center p-6 md:p-8">
               <h3 className="text-lg font-semibold text-white">
-                <GradientText>{item.title}</GradientText>
+                <GradientText subtle>{item.title}</GradientText>
               </h3>
               <p className="mt-2 text-sm text-gray-400">
                 {item.summary}
