@@ -64,7 +64,7 @@ const stars = [
 
 export function HeroSection() {
   return (
-    <section className="relative isolate flex min-h-screen w-full items-center overflow-hidden">
+    <section className="relative isolate flex min-h-[calc(100vh-4.5rem)] w-full items-center overflow-hidden">
 
       {/* ── Star field ── */}
       <div className="pointer-events-none absolute inset-0 z-[2]" aria-hidden>
