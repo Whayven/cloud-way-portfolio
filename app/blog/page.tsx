@@ -60,18 +60,19 @@ export default async function BlogPage() {
                   href={`/blog/${featured.slug}`}
                   className="group block"
                 >
+                  {/* Image hero — hidden on mobile, shown sm+ */}
                   {featured.coverImage && (
-                    <div className="relative aspect-[2.2/1] overflow-hidden rounded-2xl border border-white/10">
+                    <div className="relative hidden overflow-hidden rounded-2xl border border-white/10 sm:block sm:aspect-[2.2/1]">
                       <Image
                         src={featured.coverImage}
                         alt={featured.title}
                         fill
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        sizes="(max-width: 768px) 100vw, 960px"
+                        sizes="960px"
                         priority
                       />
                       <div className="absolute inset-0 bg-linear-to-t from-cw-dark via-cw-dark/40 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-8 sm:p-10">
+                      <div className="absolute inset-x-0 bottom-0 p-10">
                         {featured.publishedAt && (
                           <time className="text-xs font-medium uppercase tracking-widest text-gray-400">
                             {formatDate(featured.publishedAt)}
@@ -86,25 +87,24 @@ export default async function BlogPage() {
                       </div>
                     </div>
                   )}
-                  {!featured.coverImage && (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors duration-300 group-hover:border-purple-400/20 group-hover:bg-white/[0.06] sm:p-10">
-                      {featured.publishedAt && (
-                        <time className="text-xs font-medium uppercase tracking-widest text-gray-500">
-                          {formatDate(featured.publishedAt)}
-                        </time>
-                      )}
-                      <h2 className="mt-3 text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-purple-300 sm:text-3xl">
-                        {featured.title}
-                      </h2>
-                      <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-400">
-                        {featured.excerpt}
-                      </p>
-                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-purple-400 transition-colors group-hover:text-purple-300">
-                        Read article
-                        <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                      </span>
-                    </div>
-                  )}
+                  {/* Plain card — shown on mobile (always if no image, mobile-only if image) */}
+                  <div className={`rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors duration-300 group-hover:border-purple-400/20 group-hover:bg-white/[0.06] sm:p-10 ${featured.coverImage ? "sm:hidden" : ""}`}>
+                    {featured.publishedAt && (
+                      <time className="text-xs font-medium uppercase tracking-widest text-gray-500">
+                        {formatDate(featured.publishedAt)}
+                      </time>
+                    )}
+                    <h2 className="mt-3 text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-purple-300 sm:text-3xl">
+                      {featured.title}
+                    </h2>
+                    <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-400">
+                      {featured.excerpt}
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-purple-400 transition-colors group-hover:text-purple-300">
+                      Read article
+                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                    </span>
+                  </div>
                 </Link>
               </article>
             )}
@@ -126,13 +126,13 @@ export default async function BlogPage() {
                         className="group flex h-full flex-col rounded-xl border border-white/[0.07] bg-white/[0.02] p-6 transition-all duration-300 hover:border-purple-400/20 hover:bg-white/[0.05]"
                       >
                         {post.coverImage && (
-                          <div className="relative -mx-6 -mt-6 mb-5 aspect-[2/1] overflow-hidden rounded-t-xl">
+                          <div className="relative -mx-6 -mt-6 mb-5 hidden aspect-[2/1] overflow-hidden rounded-t-xl sm:block">
                             <Image
                               src={post.coverImage}
                               alt={post.title}
                               fill
                               className="object-cover transition-transform duration-500 group-hover:scale-105"
-                              sizes="(max-width: 640px) 100vw, 480px"
+                              sizes="480px"
                             />
                           </div>
                         )}
