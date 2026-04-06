@@ -16,6 +16,7 @@ import { Navbar, NavbarSpacer } from "@/app/_components/catalyst/navbar"
 import {
   HomeIcon,
   FolderIcon,
+  DocumentTextIcon,
   EnvelopeIcon,
   MegaphoneIcon,
   ArrowRightStartOnRectangleIcon,
@@ -49,6 +50,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               >
                 <FolderIcon />
                 <SidebarLabel>Portfolio</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem
+                href="/admin/blog"
+                current={pathname.startsWith("/admin/blog")}
+              >
+                <DocumentTextIcon />
+                <SidebarLabel>Blog</SidebarLabel>
               </SidebarItem>
               <SidebarItem
                 href="/admin/announcements"

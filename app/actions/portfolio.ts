@@ -6,6 +6,7 @@ import { slugify } from "@/lib/utils"
 import { ContentStatus } from "@/lib/generated/prisma/client"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
+import { deleteFromR2 } from "@/lib/upload"
 
 export type PortfolioFormState = {
   success: boolean
@@ -99,7 +100,7 @@ export async function updatePortfolio(
   // Preserve original publishedAt if already published
   const existing = await prisma.portfolioItem.findUnique({
     where: { id },
-    select: { publishedAt: true },
+    select: { publishedAt: true, imageUrl: true },
   })
   if (data.status === ContentStatus.published && existing?.publishedAt) {
     data.publishedAt = existing.publishedAt
@@ -107,6 +108,9 @@ export async function updatePortfolio(
 
   try {
     await prisma.portfolioItem.update({ where: { id }, data })
+    if (existing?.imageUrl && existing.imageUrl !== data.imageUrl) {
+      deleteFromR2(existing.imageUrl)
+    }
   } catch (e) {
     const message =
       e instanceof Error && e.message.includes("Unique constraint")
@@ -127,7 +131,8 @@ export async function deletePortfolio(formData: FormData) {
   const id = formData.get("id")?.toString()
   if (!id) return
 
-  await prisma.portfolioItem.delete({ where: { id } })
+  const item = await prisma.portfolioItem.delete({ where: { id } })
+  if (item.imageUrl) deleteFromR2(item.imageUrl)
   revalidatePath("/admin/portfolio")
   revalidatePath("/work")
   redirect("/admin/portfolio")

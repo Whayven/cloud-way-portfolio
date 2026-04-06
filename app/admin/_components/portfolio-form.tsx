@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useCallback, useState } from "react"
+import { useActionState, useCallback, useState, useMemo } from "react"
 import {
   createPortfolio,
   updatePortfolio,
@@ -22,6 +22,7 @@ import { Textarea } from "@/app/_components/catalyst/textarea"
 import { Select } from "@/app/_components/catalyst/select"
 import { Button } from "@/app/_components/catalyst/button"
 import { Text } from "@/app/_components/catalyst/text"
+import { ImageUpload } from "./image-upload"
 
 const initialState: PortfolioFormState = { success: false }
 
@@ -30,6 +31,10 @@ export function PortfolioForm({ item }: { item?: PortfolioItem }) {
   const action = isEdit ? updatePortfolio : createPortfolio
   const [state, formAction, pending] = useActionState(action, initialState)
   const [slug, setSlug] = useState(item?.slug ?? "")
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    item?.imageUrl ?? null,
+  )
+  const stableSetImageUrl = useMemo(() => setImageUrl, [])
 
   const handleTitleBlur = useCallback(
     (e: React.FocusEvent<HTMLInputElement>) => {
@@ -108,13 +113,13 @@ export function PortfolioForm({ item }: { item?: PortfolioItem }) {
                 />
               </Field>
               <Field>
-                <Label>Image URL</Label>
-                <Input
-                  name="imageUrl"
-                  type="url"
-                  defaultValue={item?.imageUrl ?? ""}
-                  placeholder="https://..."
+                <Label>Image</Label>
+                <ImageUpload
+                  prefix="portfolio"
+                  defaultValue={item?.imageUrl}
+                  onChange={stableSetImageUrl}
                 />
+                <input type="hidden" name="imageUrl" value={imageUrl ?? ""} />
               </Field>
             </div>
             <div className="grid gap-6 sm:grid-cols-3">

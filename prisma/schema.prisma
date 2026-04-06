@@ -26,6 +26,7 @@ model BlogPost {
   title       String
   excerpt     String
   body        String        @db.Text
+  coverImage  String?
   publishedAt DateTime?
   status      ContentStatus @default(draft)
   createdAt   DateTime      @default(now())

@@ -5,6 +5,16 @@ const nextConfig: NextConfig = {
     authInterrupts: true,
   },
   serverExternalPackages: ["@prisma/adapter-pg", "pg"],
+  images: {
+    remotePatterns: process.env.R2_PUBLIC_URL
+      ? [
+          {
+            protocol: "https" as const,
+            hostname: new URL(process.env.R2_PUBLIC_URL).hostname,
+          },
+        ]
+      : [],
+  },
 }
 
 export default nextConfig

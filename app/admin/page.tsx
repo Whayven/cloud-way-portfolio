@@ -16,6 +16,8 @@ export default async function AdminDashboard() {
     messageCount,
     announcementCount,
     activeAnnouncementCount,
+    blogCount,
+    publishedBlogCount,
   ] = await Promise.all([
     prisma.portfolioItem.count(),
     prisma.portfolioItem.count({ where: { status: ContentStatus.published } }),
@@ -27,6 +29,8 @@ export default async function AdminDashboard() {
         OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
       },
     }),
+    prisma.blogPost.count(),
+    prisma.blogPost.count({ where: { status: ContentStatus.published } }),
   ])
 
   return (
@@ -47,6 +51,16 @@ export default async function AdminDashboard() {
             <DescriptionDetails>
               {portfolioCount - publishedCount}
             </DescriptionDetails>
+          </DescriptionList>
+        </div>
+
+        <div>
+          <Subheading>Blog</Subheading>
+          <DescriptionList className="mt-4">
+            <DescriptionTerm>Total posts</DescriptionTerm>
+            <DescriptionDetails>{blogCount}</DescriptionDetails>
+            <DescriptionTerm>Published</DescriptionTerm>
+            <DescriptionDetails>{publishedBlogCount}</DescriptionDetails>
           </DescriptionList>
         </div>
 

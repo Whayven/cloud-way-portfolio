@@ -6,11 +6,7 @@ import { useEffect, useState } from "react";
 const nav = [
   { href: "/", label: "Home" },
   { href: "/work", label: "Work" },
-  {
-    href: "https://blog.cloud-way.dev",
-    label: "Blog",
-    external: true,
-  },
+  { href: "/blog", label: "Blog" },
 ] as const;
 
 export function SiteHeader() {
@@ -63,31 +59,16 @@ export function SiteHeader() {
         </Link>
 
         <ul className="flex items-center gap-1 sm:gap-2">
-          {nav.map((item) => {
-            const className =
-              "rounded-lg px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:text-white";
-            if ("external" in item && item.external) {
-              return (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={className}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              );
-            }
-            return (
-              <li key={item.href}>
-                <Link href={item.href} className={className}>
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
+          {nav.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:text-white"
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </header>
