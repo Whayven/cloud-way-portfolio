@@ -10,16 +10,37 @@ import { SiteHeader } from "@/components/site/site-header"
 
 export default function Home() {
   return (
-    <>
-      <SiteHeader />
-      <HeroSection />
-      <main className="relative z-0 mx-auto w-full max-w-6xl px-6 pb-24 pt-16 text-base leading-relaxed text-cw-dark sm:px-8 lg:px-10 dark:text-white">
-        <AboutSection />
-        <ServicesSection />
-        <WorkSection />
-        <ContactSection />
-      </main>
-      <SiteFooter />
-    </>
+    <div className="relative min-h-screen bg-cw-dark">
+      {/* Fixed parallax nebula background */}
+      <div className="fixed inset-0 z-0">
+        <video
+          className="h-full w-full object-cover opacity-40"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden
+        >
+          <source src="/assets/hero-nebula.mp4" type="video/mp4" />
+        </video>
+        <div
+          className="absolute inset-0 bg-linear-to-b from-cw-dark/30 via-cw-dark/60 to-cw-dark/90"
+          aria-hidden
+        />
+      </div>
+
+      {/* Scrolling content */}
+      <div className="relative z-10">
+        <SiteHeader />
+        <HeroSection />
+        <main className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-16 text-base leading-relaxed text-white sm:px-8 lg:px-10">
+          <AboutSection />
+          <ServicesSection />
+          <WorkSection />
+          <ContactSection />
+        </main>
+        <SiteFooter />
+      </div>
+    </div>
   )
 }

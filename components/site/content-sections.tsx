@@ -50,14 +50,14 @@ const work = [
 ] as const
 
 const sectionTitle =
-  "text-center text-3xl font-semibold tracking-tight text-cw-dark sm:text-4xl dark:text-white"
+  "text-center text-3xl font-semibold tracking-tight text-white sm:text-4xl"
 
 const sectionLead =
-  "max-w-2xl text-center text-base text-gray-600 sm:text-lg dark:text-gray-400"
+  "max-w-2xl text-center text-base text-gray-400 sm:text-lg"
 
 export function AboutSection() {
   return (
-    <section className="border-t border-gray-200/80 py-20 dark:border-white/10 sm:py-24">
+    <section className="border-t border-white/10 py-20 sm:py-24">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className={sectionTitle}>
           <GradientText>About Us</GradientText>
@@ -84,12 +84,12 @@ export function AboutSection() {
         ].map((block) => (
           <li
             key={block.title}
-            className="border-l-2 border-accent-sky/60 pl-6 dark:border-accent-sky/40"
+            className="border-l-2 border-accent-sky-light/40 pl-6"
           >
-            <h3 className="text-lg font-semibold text-cw-dark dark:text-white">
+            <h3 className="text-lg font-semibold text-white">
               <GradientText>{block.title}</GradientText>
             </h3>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">{block.body}</p>
+            <p className="mt-2 text-gray-400">{block.body}</p>
           </li>
         ))}
       </ul>
@@ -99,7 +99,7 @@ export function AboutSection() {
 
 export function ServicesSection() {
   return (
-    <section className="border-t border-gray-200/80 py-20 dark:border-white/10 sm:py-24">
+    <section className="border-t border-white/10 py-20 sm:py-24">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className={sectionTitle}>
           <GradientText>Our Services</GradientText>
@@ -113,15 +113,15 @@ export function ServicesSection() {
         {services.map(({ title, body, Icon }) => (
           <div
             key={title}
-            className="rounded-2xl border border-gray-200/90 bg-cw-card/80 p-8 shadow-sm dark:border-white/10 dark:bg-cw-card-dark/50"
+            className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
           >
-            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-br from-accent-sky/25 to-accent-purple/25 dark:from-accent-sky/15 dark:to-accent-purple/20">
-              <Icon className="h-5 w-5 text-accent-purple dark:text-accent-sky" />
+            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
+              <Icon className="h-5 w-5 text-accent-sky-light" />
             </div>
-            <h3 className="text-lg font-semibold text-cw-dark dark:text-white">
+            <h3 className="text-lg font-semibold text-white">
               <GradientText>{title}</GradientText>
             </h3>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+            <p className="mt-3 text-sm leading-relaxed text-gray-400">
               {body}
             </p>
           </div>
@@ -133,7 +133,7 @@ export function ServicesSection() {
 
 export function WorkSection() {
   return (
-    <section className="border-t border-gray-200/80 py-20 dark:border-white/10 sm:py-24">
+    <section className="border-t border-white/10 py-20 sm:py-24">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className={sectionTitle}>
           <GradientText>Our Work</GradientText>
@@ -150,25 +150,25 @@ export function WorkSection() {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200/90 bg-cw-card/60 transition duration-300 hover:border-accent-sky/35 hover:shadow-[0_16px_48px_-20px_rgba(128,0,128,0.25)] dark:border-white/10 dark:bg-cw-card-dark/40 dark:hover:border-accent-sky/30 md:flex-row"
+            className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl transition duration-300 hover:border-accent-sky-light/30 hover:bg-white/10 md:flex-row"
           >
-            <div className="flex min-h-40 shrink-0 items-center justify-center bg-linear-to-br from-accent-sky/30 via-accent-purple/20 to-accent-purple/35 px-8 dark:from-accent-sky/15 dark:via-accent-purple/10 dark:to-accent-purple/25 md:w-56">
-              <span className="text-center text-lg font-bold tracking-tight text-cw-dark/90 dark:text-white/95">
+            <div className="flex min-h-40 shrink-0 items-center justify-center bg-white/5 px-8 md:w-56">
+              <span className="text-center text-lg font-bold tracking-tight text-white/95">
                 {item.title}
               </span>
             </div>
             <div className="flex min-w-0 flex-1 flex-col justify-center p-6 md:p-8">
-              <h3 className="text-lg font-semibold text-cw-dark dark:text-white">
+              <h3 className="text-lg font-semibold text-white">
                 <GradientText>{item.title}</GradientText>
               </h3>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-sm text-gray-400">
                 {item.description}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {item.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-md bg-accent-purple/90 px-2.5 py-1 text-xs font-semibold text-white"
+                    className="rounded-md bg-purple-600/80 px-2.5 py-1 text-xs font-semibold text-white"
                   >
                     {tag}
                   </span>

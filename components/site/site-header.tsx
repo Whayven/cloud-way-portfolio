@@ -1,73 +1,41 @@
 import Link from "next/link"
 
 const nav = [
-  { href: "/", label: "Home", variant: "primary" as const },
-  { href: "/work", label: "Work", variant: "default" as const },
+  { href: "/", label: "Home" },
+  { href: "/work", label: "Work" },
   {
     href: "https://blog.cloud-way.dev",
     label: "Blog",
-    variant: "default" as const,
     external: true,
   },
 ] as const
 
-const linkClass = {
-  primary:
-    "font-medium text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300",
-  default:
-    "font-medium text-gray-600 transition-colors hover:text-cw-dark dark:text-gray-400 dark:hover:text-white",
-} as const
-
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200/70 bg-cw-light/85 backdrop-blur-md dark:border-white/10 dark:bg-cw-dark/80">
+    <header className="absolute top-0 z-50 w-full">
       <nav
-        className="mx-auto flex w-full max-w-[85rem] flex-wrap items-center justify-between gap-4 px-5 py-3.5 sm:flex-nowrap sm:px-8"
+        className="mx-auto flex w-full max-w-[85rem] items-center justify-between px-6 py-5 sm:px-10"
         aria-label="Global"
       >
-        <Link href="/" className="flex shrink-0 items-center gap-2">
-          <span className="relative h-11 w-[11.5rem] sm:h-12 sm:w-[12.5rem]">
-            <span
-              className="absolute inset-0 flex items-center font-bold tracking-tight"
-              aria-hidden
-            >
-              <svg
-                viewBox="0 0 200 50"
-                className="h-full w-full"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <linearGradient
-                    id="cwLogo"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="100%"
-                  >
-                    <stop offset="0%" stopColor="#87ceeb" />
-                    <stop offset="100%" stopColor="#800080" />
-                  </linearGradient>
-                </defs>
-                <text
-                  x="4"
-                  y="36"
-                  fontFamily="var(--font-poppins), sans-serif"
-                  fontSize="28"
-                  fill="none"
-                  stroke="url(#cwLogo)"
-                  strokeWidth="2"
-                >
-                  CloudWay
-                </text>
-              </svg>
-            </span>
-            <span className="sr-only">CloudWay</span>
+        <Link href="/" className="flex shrink-0 items-center gap-2.5">
+          {/* Cloud icon */}
+          <svg
+            className="h-8 w-8 text-accent-sky-light"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
+          </svg>
+          <span className="text-lg font-semibold tracking-tight text-white">
+            Cloud<span className="text-accent-sky-light">Way</span>
           </span>
         </Link>
-        <ul className="flex flex-wrap items-center gap-1 sm:gap-2">
+
+        <ul className="flex items-center gap-1 sm:gap-2">
           {nav.map((item) => {
-            const className = `${linkClass[item.variant]} rounded-lg px-3 py-2 text-sm`
+            const className =
+              "rounded-lg px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:text-white"
             if ("external" in item && item.external) {
               return (
                 <li key={item.href}>
