@@ -3,8 +3,8 @@ import {
   MagnifyingGlassIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline"
-import Link from "next/link"
 import { GradientText } from "@/components/site/gradient-text"
+import { WorkGrid } from "@/components/site/work-grid"
 import { prisma } from "@/lib/db"
 
 const services = [
@@ -124,39 +124,15 @@ export async function WorkSection() {
           web applications.
         </p>
       </div>
-      <div className="mx-auto mt-14 flex max-w-6xl flex-col gap-6">
-        {items.map((item) => (
-          <Link
-            key={item.id}
-            href={`/work/${item.slug}`}
-            className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl transition duration-300 hover:border-accent-sky-light/30 hover:bg-white/10 md:flex-row"
-          >
-            <div className="flex min-h-40 shrink-0 items-center justify-center bg-white/5 px-8 md:w-56">
-              <span className="text-center text-lg font-bold tracking-tight text-white/95">
-                {item.title}
-              </span>
-            </div>
-            <div className="flex min-w-0 flex-1 flex-col justify-center p-6 md:p-8">
-              <h3 className="text-lg font-semibold text-white">
-                <GradientText subtle>{item.title}</GradientText>
-              </h3>
-              <p className="mt-2 text-sm text-gray-400">
-                {item.summary}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {item.techStack.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-md bg-purple-600/80 px-2.5 py-1 text-xs font-semibold text-white"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <WorkGrid
+        items={items.map((item) => ({
+          slug: item.slug,
+          title: item.title,
+          summary: item.summary,
+          imageUrl: item.imageUrl,
+          techStack: item.techStack,
+        }))}
+      />
     </section>
   )
 }
