@@ -125,7 +125,7 @@ export function HeroSection() {
                 animationDelay: `${0.6 + i * 0.2}s`,
               }}
             >
-              <div className="mb-2 flex items-center gap-2.5 text-accent-sky-light">
+              <div className="mb-2 flex items-center gap-2.5 text-purple-400">
                 {stat.icon}
                 <h3 className="text-sm font-semibold text-white">{stat.title}</h3>
               </div>
