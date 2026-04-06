@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { prisma } from "@/lib/db"
 import { GradientText } from "@/components/site/gradient-text"
@@ -6,7 +7,7 @@ import { SiteFooter } from "@/components/site/site-footer"
 import { NebulaBackground } from "@/components/site/nebula-background"
 
 export const metadata = {
-  title: "Work — CloudWay",
+  title: "Work",
   description: "Explore our portfolio of projects and case studies.",
 }
 
@@ -44,10 +45,20 @@ export default async function WorkPage() {
                   href={`/work/${item.slug}`}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl transition duration-300 hover:border-accent-sky-light/30 hover:bg-white/10 md:flex-row"
                 >
-                  <div className="flex min-h-44 shrink-0 items-center justify-center bg-white/5 px-8 md:w-64">
-                    <span className="text-center text-xl font-bold tracking-tight text-white/95">
-                      {item.title}
-                    </span>
+                  <div className="relative flex min-h-44 shrink-0 items-center justify-center overflow-hidden bg-white/5 md:w-64">
+                    {item.imageUrl ? (
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 256px"
+                      />
+                    ) : (
+                      <span className="px-8 text-center text-xl font-bold tracking-tight text-white/95">
+                        {item.title}
+                      </span>
+                    )}
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col justify-center p-6 md:p-8">
                     <h2 className="text-xl font-semibold text-white">

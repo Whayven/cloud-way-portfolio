@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
@@ -16,9 +17,9 @@ export async function generateMetadata({
     where: { slug, status: "published" },
     select: { title: true, summary: true },
   })
-  if (!item) return { title: "Not Found — CloudWay" }
+  if (!item) return { title: "Not Found" }
   return {
-    title: `${item.title} — CloudWay`,
+    title: item.title,
     description: item.summary,
   }
 }
@@ -58,6 +59,19 @@ export default async function WorkDetailPage({
             <p className="mt-4 text-lg leading-relaxed text-gray-400">
               {item.summary}
             </p>
+
+            {item.imageUrl && (
+              <div className="relative mt-8 aspect-video overflow-hidden rounded-xl">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  priority
+                />
+              </div>
+            )}
 
             <div className="mt-6 flex flex-wrap gap-2">
               {item.techStack.map((tag) => (

@@ -9,9 +9,18 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "CloudWay",
+  title: {
+    default: "CloudWay — Software Solutions",
+    template: "%s — CloudWay",
+  },
   description:
-    "Elevate your business with our cutting-edge software solutions.",
+    "Elevate your business with cutting-edge software solutions. Design, development, and SEO from CloudWay.",
+  metadataBase: new URL("https://cloud-way.dev"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "CloudWay",
+  },
 }
 
 export default function RootLayout({
