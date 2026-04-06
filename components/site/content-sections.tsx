@@ -39,23 +39,24 @@ export function AboutSection() {
           <GradientText subtle>About Us</GradientText>
         </h2>
         <p className={`mx-auto mt-5 ${sectionLead}`}>
-          We are a team of developers who are passionate about creating
-          beautiful, modern, and accessible websites and web applications.
+          We are a team of full-stack developers who build end-to-end
+          applications — from polished frontends to robust backends — that
+          help businesses grow and operate more efficiently.
         </p>
       </div>
       <ul className="mx-auto mt-14 max-w-3xl space-y-10">
         {[
           {
-            title: "Your Vision, Crafted with Passion.",
-            body: "We pour heart and expertise into building beautiful, modern web experiences that resonate with your users.",
+            title: "End-to-End, Built Right.",
+            body: "From database design and APIs to responsive UIs, we own the entire stack so nothing falls through the cracks.",
           },
           {
-            title: "Innovation First.",
-            body: "We harness cutting-edge tools and techniques to ensure your web presence stays ahead of the curve.",
+            title: "Built to Scale Your Business.",
+            body: "We architect applications that grow with you — performant, maintainable, and ready for what comes next.",
           },
           {
             title: "Effortless Experiences for All.",
-            body: "Intuitive interfaces and seamless navigation make your website a joy to use, regardless of a visitor's abilities.",
+            body: "Intuitive interfaces and seamless navigation make your application a joy to use, regardless of a visitor's abilities.",
           },
         ].map((block) => (
           <li

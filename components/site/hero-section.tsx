@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import Link from "next/link"
 import { GradientText } from "@/components/site/gradient-text"
+import { StarButton } from "@/components/ui/star-button"
 import { ChevronLeftIcon, ChevronRightIcon, MegaphoneIcon } from "@heroicons/react/20/solid"
 
 type Announcement = {
@@ -161,19 +161,11 @@ export function HeroSection({
             We are <GradientText className="inline">CloudWay</GradientText>.
           </h1>
           <p className="mb-10 max-w-lg text-lg text-gray-400 opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.5s_forwards] sm:text-xl">
-            Elevate your business with our cutting-edge software
-            solutions and space-age design.
+            We build full-stack applications that help businesses
+            scale, streamline operations, and stand out online.
           </p>
           <div className="opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.8s_forwards]">
-            <Link
-              href="/work"
-              className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(56,189,248,0.15)]"
-            >
-              View Work
-              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1" aria-hidden>
-                &rsaquo;
-              </span>
-            </Link>
+            <StarButton href="/work">View Work</StarButton>
           </div>
         </div>
 
