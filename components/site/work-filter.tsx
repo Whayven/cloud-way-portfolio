@@ -11,7 +11,12 @@ function categorize(techStack: string[]): Category {
   if (/(react native|expo|ios|android|swift|kotlin|mobile)/.test(haystack)) return "Mobile"
   if (/(clickhouse|d3|dashboard|chart|snowflake|duckdb|analytics|bigquery)/.test(haystack))
     return "Analytics"
-  if (/(airflow|temporal|queue|cron|pipeline|zapier|ops)/.test(haystack)) return "Ops"
+  if (
+    /(airflow|temporal|queue|cron|pipeline|zapier|ops|devops|docker|k8s|kubernetes|terraform|helm|monitoring|prometheus|grafana|ci\/cd|ci-cd|github actions|aws|gcp|azure|cloudflare|infra|infrastructure)/.test(
+      haystack,
+    )
+  )
+    return "Ops"
   return "Web app"
 }
 
@@ -39,6 +44,7 @@ export function WorkFilter({ items }: { items: WorkGridItem[] }) {
             <button
               key={c}
               onClick={() => setActive(c)}
+              aria-pressed={active === c}
               className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-300 ${
                 active === c
                   ? "bg-linear-to-r from-purple-500 to-fuchsia-500 text-white shadow-[0_0_20px_-5px_rgba(168,85,247,0.6)]"

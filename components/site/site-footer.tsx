@@ -67,7 +67,7 @@ export function SiteFooter() {
               {col.items.map((item) => {
                 const external = /^https?:\/\//.test(item.href)
                 return (
-                <li key={item.label}>
+                <li key={`${item.label}-${item.href}`}>
                   <Link
                     href={item.href}
                     target={external ? "_blank" : undefined}
@@ -90,7 +90,7 @@ export function SiteFooter() {
         </p>
         <p className="flex items-center text-xs text-gray-500">
           <span className="relative mr-2 inline-flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-ping motion-reduce:animate-none" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
           All systems operational

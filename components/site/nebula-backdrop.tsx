@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef } from "react"
 
 type Star = {
   x: number
@@ -81,15 +81,45 @@ export function NebulaBackdrop({
   comets = true,
   constellations = true,
 }: NebulaBackdropProps) {
-  const [mouse, setMouse] = useState({ x: 0, y: 0 })
+  const backdropRef = useRef<HTMLDivElement>(null)
   const glowRef = useRef<HTMLDivElement>(null)
+  const mouseRef = useRef({ x: 0, y: 0 })
   const targetRef = useRef<{ x: number; y: number } | null>(null)
   const posRef = useRef<{ x: number; y: number } | null>(null)
 
   useEffect(() => {
     if (!interactive) return
-    let rafId = 0
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+
+    let pointerRafId = 0
+    let glowRafId = 0
     let insideBounds = false
+
+    const applyPointerFrame = () => {
+      pointerRafId = 0
+      const el = backdropRef.current
+      if (!el) return
+
+      const { x, y } = mouseRef.current
+      el.style.setProperty("--nebula-x", `${x * -12}px`)
+      el.style.setProperty("--nebula-y", `${y * -12}px`)
+      el.style.setProperty("--star-layer-0-x", `${x * STAR_LAYERS[0].depth * 40}px`)
+      el.style.setProperty("--star-layer-0-y", `${y * STAR_LAYERS[0].depth * 40}px`)
+      el.style.setProperty("--star-layer-1-x", `${x * STAR_LAYERS[1].depth * 40}px`)
+      el.style.setProperty("--star-layer-1-y", `${y * STAR_LAYERS[1].depth * 40}px`)
+      el.style.setProperty("--star-layer-2-x", `${x * STAR_LAYERS[2].depth * 40}px`)
+      el.style.setProperty("--star-layer-2-y", `${y * STAR_LAYERS[2].depth * 40}px`)
+      el.style.setProperty("--constellation-x", `${x * 4}px`)
+      el.style.setProperty("--constellation-y", `${y * 4}px`)
+      AURORA_BLOBS.forEach((blob, index) => {
+        el.style.setProperty(`--aurora-${index}-x`, `${x * blob.depth * 60}px`)
+        el.style.setProperty(`--aurora-${index}-y`, `${y * blob.depth * 60}px`)
+      })
+    }
+
+    const schedulePointerFrame = () => {
+      if (!pointerRafId) pointerRafId = requestAnimationFrame(applyPointerFrame)
+    }
 
     const cursorIsInBounds = (x: number, y: number) => {
       const el = document.querySelector<HTMLElement>("[data-cursor-glow-container]")
@@ -101,10 +131,12 @@ export function NebulaBackdrop({
     const onMove = (e: MouseEvent) => {
       const w = window.innerWidth
       const h = window.innerHeight
-      setMouse({
+      mouseRef.current = {
         x: (e.clientX - w / 2) / (w / 2),
         y: (e.clientY - h / 2) / (h / 2),
-      })
+      }
+      schedulePointerFrame()
+
       const wasInside = insideBounds
       insideBounds = cursorIsInBounds(e.clientX, e.clientY)
       if (insideBounds) {
@@ -135,16 +167,17 @@ export function NebulaBackdrop({
         const nextOpacity = insideBounds ? "0.6" : "0"
         if (el.style.opacity !== nextOpacity) el.style.opacity = nextOpacity
       }
-      rafId = requestAnimationFrame(tick)
+      glowRafId = requestAnimationFrame(tick)
     }
 
     window.addEventListener("mousemove", onMove, { passive: true })
     window.addEventListener("scroll", onScroll, { passive: true })
-    rafId = requestAnimationFrame(tick)
+    glowRafId = requestAnimationFrame(tick)
     return () => {
       window.removeEventListener("mousemove", onMove)
       window.removeEventListener("scroll", onScroll)
-      cancelAnimationFrame(rafId)
+      cancelAnimationFrame(pointerRafId)
+      cancelAnimationFrame(glowRafId)
     }
   }, [interactive])
 
@@ -170,15 +203,19 @@ export function NebulaBackdrop({
   }, [layers])
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
+    <div
+      ref={backdropRef}
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      aria-hidden
+    >
       {/* Nebula image */}
       <div
         className="absolute inset-0"
         style={{
           opacity,
-          transform: `scale(1.15) translate3d(${mouse.x * -12}px, ${mouse.y * -12}px, 0)`,
+          transform: "scale(1.15) translate3d(var(--nebula-x, 0px), var(--nebula-y, 0px), 0)",
           transition: "transform 0.8s var(--ease-spring)",
-          animation: "nebulaDrift 60s ease-in-out infinite, hueShift 30s ease-in-out infinite",
+          animation: "nebula-drift 60s ease-in-out infinite, hue-shift 30s ease-in-out infinite",
           filter: "saturate(1.1) contrast(1.05)",
         }}
       >
@@ -220,7 +257,7 @@ export function NebulaBackdrop({
                 opacity: 0.9,
                 mixBlendMode: "screen",
                 animation: `aurora ${b.dur}s ease-in-out ${b.delay}s infinite`,
-                transform: `translate3d(${mouse.x * b.depth * 60}px, ${mouse.y * b.depth * 60}px, 0)`,
+                transform: `translate3d(var(--aurora-${i}-x, 0px), var(--aurora-${i}-y, 0px), 0)`,
                 transition: "transform 0.6s var(--ease-spring)",
               }}
             />
@@ -234,7 +271,7 @@ export function NebulaBackdrop({
           key={li}
           className="absolute inset-0"
           style={{
-            transform: `translate3d(${mouse.x * layer.depth * 40}px, ${mouse.y * layer.depth * 40}px, 0)`,
+            transform: `translate3d(var(--star-layer-${li}-x, 0px), var(--star-layer-${li}-y, 0px), 0)`,
             transition: "transform 0.4s var(--ease-spring)",
           }}
         >
@@ -266,7 +303,7 @@ export function NebulaBackdrop({
         <svg
           className="absolute inset-0 h-full w-full"
           style={{
-            transform: `translate3d(${mouse.x * 4}px, ${mouse.y * 4}px, 0)`,
+            transform: "translate3d(var(--constellation-x, 0px), var(--constellation-y, 0px), 0)",
             transition: "transform 0.4s var(--ease-spring)",
           }}
         >
@@ -287,7 +324,7 @@ export function NebulaBackdrop({
               stroke="url(#cwConstLine)"
               strokeWidth="0.5"
               opacity="0.35"
-              style={{ animation: `constPulse 6s ease-in-out ${i * 0.4}s infinite` }}
+              style={{ animation: `const-pulse 6s ease-in-out ${i * 0.4}s infinite` }}
             />
           ))}
         </svg>

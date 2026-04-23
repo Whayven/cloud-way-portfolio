@@ -176,7 +176,10 @@ function PostCard({ post }: { post: PostSummary }) {
 
 export default async function BlogPage() {
   const posts = await prisma.blogPost.findMany({
-    where: { status: ContentStatus.published },
+    where: {
+      status: ContentStatus.published,
+      publishedAt: { not: null },
+    },
     orderBy: { publishedAt: "desc" },
     select: {
       slug: true,

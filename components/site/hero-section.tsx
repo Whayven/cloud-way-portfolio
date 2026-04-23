@@ -102,7 +102,7 @@ function CardShell({
     <div
       className={`group relative w-64 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 opacity-0 backdrop-blur-xl transition-all duration-500 hover:border-white/25 hover:bg-white/[0.07] ${extraClass}`}
       style={{
-        animation: `fadeSlideLeft 0.6s var(--ease-spring) ${0.15 * index + 0.9}s forwards`,
+        animation: `fade-slide-left 0.6s var(--ease-spring) ${0.15 * index + 0.9}s forwards`,
       }}
       onMouseMove={(e) => {
         const el = e.currentTarget
@@ -189,10 +189,10 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
           {/* Eyebrow pill */}
           <div
             className="mb-6 inline-flex flex-nowrap items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-gray-300 opacity-0 backdrop-blur-md"
-            style={{ animation: "fadeSlideUp 0.8s var(--ease-spring) 0.1s forwards" }}
+            style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 0.1s forwards" }}
           >
             <span className="relative flex h-2 w-2 shrink-0">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-ping motion-reduce:animate-none" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
             <span>Available for new engagements</span>
@@ -202,7 +202,7 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
 
           <h1
             className="mb-6 text-5xl font-bold leading-[1.02] tracking-tight text-white opacity-0 sm:text-6xl md:text-7xl lg:text-[88px]"
-            style={{ animation: "fadeSlideUp 0.9s var(--ease-spring) 0.3s forwards" }}
+            style={{ animation: "fade-slide-up 0.9s var(--ease-spring) 0.3s forwards" }}
           >
             <span className="block">We are</span>
             <span className="relative block">
@@ -212,7 +212,7 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
                   backgroundImage:
                     "linear-gradient(90deg, #38bdf8 0%, #a855f7 35%, #ec4899 70%, #38bdf8 100%)",
                   backgroundSize: "200% 100%",
-                  animation: "textShimmer 6s linear infinite",
+                  animation: "text-shimmer 6s linear infinite",
                 }}
               >
                 CloudWay.
@@ -231,7 +231,7 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
           <p
             className="mb-10 max-w-xl text-lg leading-relaxed text-gray-300/90 opacity-0 sm:text-xl"
             style={{
-              animation: "fadeSlideUp 0.8s var(--ease-spring) 0.6s forwards",
+              animation: "fade-slide-up 0.8s var(--ease-spring) 0.6s forwards",
               textWrap: "pretty",
             }}
           >
@@ -241,7 +241,7 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
 
           <div
             className="flex flex-wrap items-center gap-3 opacity-0"
-            style={{ animation: "fadeSlideUp 0.8s var(--ease-spring) 0.85s forwards" }}
+            style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 0.85s forwards" }}
           >
             <StarButton href="/work">View Work</StarButton>
             <StarButton href="/#contact" variant="ghost">
@@ -273,7 +273,7 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
           {totalPages > 1 && (
             <div
               className="flex items-center gap-3 opacity-0"
-              style={{ animation: "fadeSlideUp 0.6s var(--ease-spring) 1.3s forwards" }}
+              style={{ animation: "fade-slide-up 0.6s var(--ease-spring) 1.3s forwards" }}
             >
               <button
                 onClick={prev}
@@ -310,17 +310,20 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
 
       {/* Scroll indicator */}
       <button
-        onClick={() => document.getElementById("content")?.scrollIntoView({ behavior: "smooth" })}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 opacity-0"
-        style={{ animation: "fadeSlideUp 0.8s var(--ease-spring) 1.5s forwards" }}
+        onClick={() => {
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          document.getElementById("content")?.scrollIntoView({
+            behavior: reduceMotion ? "auto" : "smooth",
+          })
+        }}
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 opacity-0 motion-safe:animate-[fade-slide-up_0.8s_var(--ease-spring)_1.5s_forwards] motion-reduce:opacity-100"
         aria-label="Scroll to content"
       >
         <span className="flex flex-col items-center gap-2.5 text-gray-400 transition-colors hover:text-white">
           <span className="text-[10px] font-medium uppercase tracking-[0.3em]">Scroll</span>
           <span className="relative flex h-10 w-6 items-start justify-center rounded-full border border-white/20 p-1.5">
             <span
-              className="h-2 w-1 rounded-full bg-linear-to-b from-white to-purple-400"
-              style={{ animation: "scrollDot 2s ease-in-out infinite" }}
+              className="h-2 w-1 rounded-full bg-linear-to-b from-white to-purple-400 motion-safe:animate-[scroll-dot_2s_ease-in-out_infinite]"
             />
           </span>
         </span>
@@ -329,7 +332,7 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
       {/* Socials */}
       <div
         className="absolute bottom-8 left-6 z-10 flex items-center gap-4 opacity-0 sm:left-10"
-        style={{ animation: "fadeSlideUp 0.8s var(--ease-spring) 1.4s forwards" }}
+        style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 1.4s forwards" }}
       >
         {[
           {

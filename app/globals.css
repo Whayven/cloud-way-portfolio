@@ -67,27 +67,27 @@ body {
   100% { opacity: 0; transform: translateX(-200px) translateY(-120px); }
 }
 
-@keyframes fadeSlideUp {
+@keyframes fade-slide-up {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeSlideLeft {
+@keyframes fade-slide-left {
   from { opacity: 0; transform: translateX(32px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes textShimmer {
+@keyframes text-shimmer {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
-@keyframes nebulaDrift {
+@keyframes nebula-drift {
   0%, 100% { transform: scale(1.15) translate3d(0, 0, 0); }
   50% { transform: scale(1.18) translate3d(-14px, 8px, 0); }
 }
 
-@keyframes hueShift {
+@keyframes hue-shift {
   0%, 100% { filter: saturate(1.1) contrast(1.05) hue-rotate(0deg); }
   50% { filter: saturate(1.15) contrast(1.08) hue-rotate(18deg); }
 }
@@ -106,12 +106,12 @@ body {
   100% { opacity: 0; transform: rotate(var(--comet-angle, 205deg)) translateX(-280px); }
 }
 
-@keyframes constPulse {
+@keyframes const-pulse {
   0%, 100% { opacity: 0.15; }
   50% { opacity: 0.55; }
 }
 
-@keyframes scrollDot {
+@keyframes scroll-dot {
   0% { opacity: 0; transform: translateY(0); }
   30% { opacity: 1; }
   100% { opacity: 0; transform: translateY(14px); }

@@ -46,17 +46,16 @@ Design plan for the Our Work rework is at `docs/superpowers/plans/2026-04-06-our
 The user brought in a Claude Design handoff bundle (nebula-themed polish pass) to be applied across the full public marketing surface. Intent is **visual uplift and section expansion**, not a data-model change. All server behavior (Prisma queries, contact server action, admin routes, R2 uploads) is preserved.
 
 **Source of truth**
-- Design bundle (local, ephemeral): `/tmp/cw-design-17413/cloudway/`
-  - `cloudway/chats/chat1.md` — iteration transcript
-  - `cloudway/project/{hero,sections,work,blog,chrome}.jsx` — final HTML/CSS/JS prototypes
-  - `cloudway/project/assets/hero-nebula.png` — already in `public/assets/`
-- Implementation plan: `~/.claude/plans/synthetic-whistling-pearl.md`
+- Design handoff summary: `docs/design/cloudway/README.md`
+- Applied implementation files: `components/site/hero-section.tsx`, `components/site/nebula-backdrop.tsx`, `components/site/content-sections.tsx`, `components/site/work-grid.tsx`, `components/site/blog-newsletter.tsx`, `components/site/site-header.tsx`, `components/site/site-footer.tsx`
+- Hero nebula asset: `public/assets/hero-nebula.png`
+- Implementation plan: `docs/superpowers/plans/synthetic-whistling-pearl.md`
 
 **What changes**
 - Shared chrome: new `NebulaBackdrop` (parallax nebula + 3-layer starfield + aurora blobs + constellation lines + comet streaks + cursor-reactive glow), upgraded `SiteHeader` with active-route underline, `SiteFooter` expanded to 4 columns + "all systems operational" ping.
-- Home (`/`): hero gains `textShimmer` wordmark, trust row, scroll indicator, socials. New sections added: **Process** (4-step orbital timeline), **Testimonials** (3 cards + logo strip), **CTA** slab. About becomes a 3-pillar bento; Services becomes a 2×2 icon grid with tech-pill bullets. Selected Work on the home page gets product-mock cards (gradient + grid overlay + animated bar chart + live pill + metric chip).
+- Home (`/`): hero gains `text-shimmer` wordmark, trust row, scroll indicator, socials. New sections added: **Process** (4-step orbital timeline), **Testimonials** (3 cards + logo strip), **CTA** slab. About becomes a 3-pillar bento; Services becomes a 2×2 icon grid with tech-pill bullets. Selected Work on the home page gets product-mock cards (gradient + grid overlay + animated bar chart + live pill + metric chip).
 - `/work`: eyebrow + gradient headline + 4-stat row hero, sticky filter chips, 2-col grid, featured item spans 2 cols on md+. Filter buckets derived client-side from `PortfolioItem.techStack` (no schema change).
-- `/blog`: eyebrow "Field notes" hero, featured article split layout with ★ Featured badge, 3-up grid, newsletter card (visual-only confirmation state — no mailing-list backend yet).
+- `/blog`: eyebrow "Field notes" hero, featured article split layout with ★ Featured badge, 3-up grid, newsletter card with coming-soon copy until a mailing-list backend exists.
 - Design tokens + keyframes land in `app/globals.css` under the existing `@theme inline` and a new animations block, gated by `prefers-reduced-motion`.
 
 **Explicitly out of scope for this pass**
@@ -95,7 +94,7 @@ The user brought in a Claude Design handoff bundle (nebula-themed polish pass) t
 
 ## Repository layout
 
-```
+```text
 app/
   layout.tsx          # Root (Poppins, body surface colors)
   page.tsx            # Home — fetches Announcement[], composes marketing sections
