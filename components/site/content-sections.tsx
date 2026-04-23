@@ -88,17 +88,15 @@ export function AboutSection() {
                 className="pointer-events-none absolute inset-0 opacity-60 transition-opacity duration-500 group-hover:opacity-100"
                 style={{ background: accentBg[p.accent] }}
               />
-              <div className="relative flex h-full flex-col justify-between gap-6">
+              <div className="relative flex h-full flex-col gap-6">
                 <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] text-white/40">
                   <span>0{i + 1}</span>
                   <span className="h-px w-6 bg-white/20" />
                 </div>
-                <div>
-                  <h3 className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-[26px]">
-                    {p.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-gray-400">{p.body}</p>
-                </div>
+                <h3 className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-[26px]">
+                  {p.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-gray-400">{p.body}</p>
               </div>
             </div>
           </FadeIn>

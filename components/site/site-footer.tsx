@@ -22,6 +22,8 @@ const columns = [
     items: [
       { label: "hello@cloud-way.dev", href: "mailto:hello@cloud-way.dev" },
       { label: "Start a project", href: "/#contact" },
+      { label: "X / Twitter", href: "https://x.com/Whayyven" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/wayne-foster-jr" },
     ],
   },
 ] as const
@@ -62,16 +64,21 @@ export function SiteFooter() {
               {col.heading}
             </h4>
             <ul className="mt-4 space-y-2.5">
-              {col.items.map((item) => (
+              {col.items.map((item) => {
+                const external = /^https?:\/\//.test(item.href)
+                return (
                 <li key={item.label}>
                   <Link
                     href={item.href}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noopener noreferrer" : undefined}
                     className="text-sm text-gray-300 transition-colors hover:text-white"
                   >
                     {item.label}
                   </Link>
                 </li>
-              ))}
+                )
+              })}
             </ul>
           </div>
         ))}

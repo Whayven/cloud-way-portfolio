@@ -156,8 +156,6 @@ function StatCardView({ item, index }: { item: StatCard; index: number }) {
   )
 }
 
-const AVATAR_COLORS = ["#a855f7", "#38bdf8", "#ec4899", "#22d3ee"]
-
 export function HeroSection({ announcements = [] }: { announcements?: Announcement[] }) {
   const slides: Slide[] = [
     ...announcements.map((a) => ({ kind: "announcement" as const, data: a })),
@@ -182,7 +180,10 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
   const visible = slides.slice(page * pageSize, page * pageSize + pageSize)
 
   return (
-    <section className="relative isolate flex min-h-[calc(100vh-4.5rem)] w-full items-center overflow-hidden">
+    <section
+      data-cursor-glow-container
+      className="relative isolate flex min-h-[calc(100vh-4.5rem)] w-full items-center overflow-hidden"
+    >
       <div className="relative z-10 mx-auto flex w-full max-w-[85rem] items-center justify-between gap-12 px-6 py-24 sm:px-10">
         <div className="max-w-2xl">
           {/* Eyebrow pill */}
@@ -246,32 +247,6 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
             <StarButton href="/#contact" variant="ghost">
               Start a project
             </StarButton>
-          </div>
-
-          {/* Trust row */}
-          <div
-            className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 opacity-0"
-            style={{ animation: "fadeSlideUp 0.8s var(--ease-spring) 1.1s forwards" }}
-          >
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {AVATAR_COLORS.map((c, i) => (
-                  <span
-                    key={i}
-                    className="h-7 w-7 rounded-full border-2 border-cw-dark"
-                    style={{ background: `linear-gradient(135deg, ${c}, ${c}88)` }}
-                  />
-                ))}
-              </div>
-              <span className="text-xs text-gray-400">
-                <span className="font-semibold text-white">40+ teams</span> shipped with us
-              </span>
-            </div>
-            <div className="hidden h-4 w-px bg-white/15 sm:block" />
-            <div className="flex items-center gap-1.5 text-xs text-gray-400">
-              <span className="text-amber-300">★★★★★</span>
-              <span>4.9 avg on project retros</span>
-            </div>
           </div>
         </div>
 

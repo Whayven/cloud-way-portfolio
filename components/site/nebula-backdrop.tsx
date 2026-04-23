@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 type Star = {
   x: number
@@ -82,9 +82,22 @@ export function NebulaBackdrop({
   constellations = true,
 }: NebulaBackdropProps) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
+  const glowRef = useRef<HTMLDivElement>(null)
+  const targetRef = useRef<{ x: number; y: number } | null>(null)
+  const posRef = useRef<{ x: number; y: number } | null>(null)
 
   useEffect(() => {
     if (!interactive) return
+    let rafId = 0
+    let insideBounds = false
+
+    const cursorIsInBounds = (x: number, y: number) => {
+      const el = document.querySelector<HTMLElement>("[data-cursor-glow-container]")
+      if (!el) return true // no container ⇒ whole viewport
+      const r = el.getBoundingClientRect()
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom
+    }
+
     const onMove = (e: MouseEvent) => {
       const w = window.innerWidth
       const h = window.innerHeight
@@ -92,9 +105,47 @@ export function NebulaBackdrop({
         x: (e.clientX - w / 2) / (w / 2),
         y: (e.clientY - h / 2) / (h / 2),
       })
+      const wasInside = insideBounds
+      insideBounds = cursorIsInBounds(e.clientX, e.clientY)
+      if (insideBounds) {
+        targetRef.current = { x: e.clientX, y: e.clientY }
+        // Snap position on first entry / re-entry so the glow fades in
+        // at the cursor instead of sliding across the hero.
+        if (!posRef.current || !wasInside) {
+          posRef.current = { x: e.clientX, y: e.clientY }
+        }
+      }
     }
+
+    const onScroll = () => {
+      if (targetRef.current) {
+        insideBounds = cursorIsInBounds(targetRef.current.x, targetRef.current.y)
+      }
+    }
+
+    const tick = () => {
+      const el = glowRef.current
+      const target = targetRef.current
+      const pos = posRef.current
+      if (el && target && pos) {
+        const LERP = 0.18
+        pos.x += (target.x - pos.x) * LERP
+        pos.y += (target.y - pos.y) * LERP
+        el.style.transform = `translate3d(${pos.x - 250}px, ${pos.y - 250}px, 0)`
+        const nextOpacity = insideBounds ? "0.6" : "0"
+        if (el.style.opacity !== nextOpacity) el.style.opacity = nextOpacity
+      }
+      rafId = requestAnimationFrame(tick)
+    }
+
     window.addEventListener("mousemove", onMove, { passive: true })
-    return () => window.removeEventListener("mousemove", onMove)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    rafId = requestAnimationFrame(tick)
+    return () => {
+      window.removeEventListener("mousemove", onMove)
+      window.removeEventListener("scroll", onScroll)
+      cancelAnimationFrame(rafId)
+    }
   }, [interactive])
 
   const layers = useMemo(
@@ -266,16 +317,17 @@ export function NebulaBackdrop({
         </div>
       )}
 
-      {/* Cursor glow */}
+      {/* Cursor glow — position updated per-frame via rAF lerp in the effect
+          above. Starts hidden and fades in on the first mousemove. */}
       {interactive && (
         <div
-          className="absolute h-[500px] w-[500px] rounded-full opacity-60 mix-blend-screen"
+          ref={glowRef}
+          className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full mix-blend-screen will-change-transform"
           style={{
             background: "radial-gradient(circle, rgba(168,85,247,0.22) 0%, transparent 60%)",
-            left: `calc(50% + ${mouse.x * 280}px - 250px)`,
-            top: `calc(50% + ${mouse.y * 200}px - 250px)`,
             filter: "blur(20px)",
-            transition: "left 0.3s var(--ease-spring), top 0.3s var(--ease-spring)",
+            opacity: 0,
+            transition: "opacity 0.5s ease-out",
           }}
         />
       )}
