@@ -18,6 +18,7 @@ function isActive(pathname: string, href: string) {
 export function SiteHeader() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30)
@@ -26,19 +27,43 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
+  // Close the mobile panel when the route changes.
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
+
+  // Close on Escape and lock body scroll while open.
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false)
+    }
+    document.addEventListener("keydown", onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.removeEventListener("keydown", onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [open])
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${
-        scrolled
-          ? "border-b border-white/10 bg-cw-dark/70 backdrop-blur-md"
+        scrolled || open
+          ? "border-b border-white/10 bg-cw-dark/80 backdrop-blur-md"
           : "border-b border-transparent"
       }`}
     >
       <nav
-        className="mx-auto flex w-full max-w-[85rem] items-center justify-between px-6 py-5 sm:px-10"
+        className="mx-auto flex w-full max-w-[85rem] items-center justify-between gap-4 px-6 py-4 sm:py-5 sm:px-10"
         aria-label="Global"
       >
-        <Link href="/" className="group flex shrink-0 items-center gap-2.5">
+        <Link
+          href="/"
+          onClick={() => setOpen(false)}
+          className="group flex shrink-0 items-center gap-2.5"
+        >
           <span className="relative">
             <svg
               className="h-8 w-8 transition-transform duration-500 group-hover:rotate-[10deg]"
@@ -66,7 +91,8 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <ul className="flex items-center gap-1 sm:gap-2">
+        {/* Desktop nav */}
+        <ul className="hidden items-center gap-1 md:flex md:gap-2">
           {nav.map((item) => {
             const active = isActive(pathname, item.href)
             return (
@@ -95,7 +121,65 @@ export function SiteHeader() {
             </Link>
           </li>
         </ul>
+
+        {/* Mobile menu toggle */}
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          aria-label={open ? "Close menu" : "Open menu"}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white transition-colors hover:border-purple-400/40 hover:bg-purple-500/10 md:hidden"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            {open ? (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+            )}
+          </svg>
+        </button>
       </nav>
+
+      {/* Mobile panel */}
+      <div
+        id="mobile-nav"
+        className={`overflow-hidden border-t border-white/10 bg-cw-dark/85 backdrop-blur-md transition-[max-height,opacity] duration-300 ease-out md:hidden ${
+          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <ul className="mx-auto flex w-full max-w-[85rem] flex-col gap-1 px-6 py-4 sm:px-10">
+          {nav.map((item) => {
+            const active = isActive(pathname, item.href)
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center justify-between rounded-lg px-3 py-3 text-base font-medium transition-colors ${
+                    active
+                      ? "bg-white/5 text-white"
+                      : "text-gray-300 hover:bg-white/5 hover:text-white"
+                  }`}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <span>{item.label}</span>
+                  {active && <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />}
+                </Link>
+              </li>
+            )
+          })}
+          <li className="mt-2">
+            <Link
+              href="/#contact"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10"
+            >
+              Contact
+            </Link>
+          </li>
+        </ul>
+      </div>
     </header>
   )
 }
