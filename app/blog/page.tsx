@@ -1,19 +1,20 @@
-import Image from "next/image"
-import Link from "next/link"
-import { BlogNewsletter } from "@/components/site/blog-newsletter"
-import { FadeIn } from "@/components/site/animated-section"
-import { NebulaBackdrop } from "@/components/site/nebula-backdrop"
-import { PageEyebrow } from "@/components/site/page-eyebrow"
-import { SiteFooter } from "@/components/site/site-footer"
-import { SiteHeader } from "@/components/site/site-header"
-import { prisma } from "@/lib/db"
-import { ContentStatus } from "@/lib/generated/prisma/client"
-import { formatDate } from "@/lib/utils"
+import Image from "next/image";
+import Link from "next/link";
+import { BlogNewsletter } from "@/components/site/blog-newsletter";
+import { FadeIn } from "@/components/site/animated-section";
+import { NebulaBackdrop } from "@/components/site/nebula-backdrop";
+import { PageEyebrow } from "@/components/site/page-eyebrow";
+import { SiteFooter } from "@/components/site/site-footer";
+import { SiteHeader } from "@/components/site/site-header";
+import { prisma } from "@/lib/db";
+import { ContentStatus } from "@/lib/generated/prisma/client";
+import { formatDate } from "@/lib/utils";
 
 export const metadata = {
   title: "Blog",
-  description: "Field notes from CloudWay — practical essays on software, cloud, and AI.",
-}
+  description:
+    "Field notes from CloudWay — practical essays on software, cloud, and AI.",
+};
 
 const GRADIENTS = [
   "radial-gradient(circle at 25% 25%, rgba(168,85,247,0.6), transparent 55%), radial-gradient(circle at 75% 75%, rgba(56,189,248,0.55), transparent 55%)",
@@ -21,23 +22,29 @@ const GRADIENTS = [
   "radial-gradient(circle at 30% 70%, rgba(52,211,153,0.55), transparent 55%), radial-gradient(circle at 70% 20%, rgba(168,85,247,0.5), transparent 55%)",
   "radial-gradient(circle at 70% 30%, rgba(56,189,248,0.55), transparent 55%), radial-gradient(circle at 30% 80%, rgba(236,72,153,0.5), transparent 55%)",
   "radial-gradient(circle at 20% 60%, rgba(251,191,36,0.5), transparent 55%), radial-gradient(circle at 80% 40%, rgba(168,85,247,0.5), transparent 55%)",
-]
+];
 
 function gradientFor(slug: string) {
-  let h = 0
-  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) | 0
-  return GRADIENTS[Math.abs(h) % GRADIENTS.length]
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) | 0;
+  return GRADIENTS[Math.abs(h) % GRADIENTS.length];
 }
 
 type PostSummary = {
-  slug: string
-  title: string
-  excerpt: string
-  coverImage: string | null
-  publishedAt: Date | null
-}
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverImage: string | null;
+  publishedAt: Date | null;
+};
 
-function CoverArt({ post, priority = false }: { post: PostSummary; priority?: boolean }) {
+function CoverArt({
+  post,
+  priority = false,
+}: {
+  post: PostSummary;
+  priority?: boolean;
+}) {
   return (
     <div className="relative h-full w-full overflow-hidden">
       {post.coverImage ? (
@@ -58,13 +65,14 @@ function CoverArt({ post, priority = false }: { post: PostSummary; priority?: bo
       <div
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
-          backgroundImage: "radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px)",
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       />
       <div className="absolute inset-0 bg-linear-to-t from-cw-dark/70 via-transparent to-transparent" />
     </div>
-  )
+  );
 }
 
 function FeaturedPost({ post }: { post: PostSummary }) {
@@ -83,7 +91,9 @@ function FeaturedPost({ post }: { post: PostSummary }) {
               ★ Featured
             </span>
             {post.publishedAt && (
-              <span className="whitespace-nowrap">{formatDate(post.publishedAt)}</span>
+              <span className="whitespace-nowrap">
+                {formatDate(post.publishedAt)}
+              </span>
             )}
           </div>
           <h2
@@ -102,11 +112,17 @@ function FeaturedPost({ post }: { post: PostSummary }) {
             <div className="flex items-center gap-3">
               <span
                 className="h-8 w-8 rounded-full"
-                style={{ background: "linear-gradient(135deg, #a855f7, #ec4899)" }}
+                style={{
+                  background: "linear-gradient(135deg, #a855f7, #ec4899)",
+                }}
               />
               <div>
-                <p className="text-xs font-semibold text-white">CloudWay Studio</p>
-                <p className="text-[10px] text-gray-500">Field notes</p>
+                <p className="text-xs font-semibold text-white">
+                  Wayne Foster Jr
+                </p>
+                <p className="text-[10px] text-gray-500">
+                  Full-stack developer
+                </p>
               </div>
             </div>
             <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium text-purple-300 transition-colors group-hover:text-white">
@@ -129,7 +145,7 @@ function FeaturedPost({ post }: { post: PostSummary }) {
         </div>
       </div>
     </Link>
-  )
+  );
 }
 
 function PostCard({ post }: { post: PostSummary }) {
@@ -161,7 +177,13 @@ function PostCard({ post }: { post: PostSummary }) {
         </p>
         <span className="mt-5 inline-flex items-center gap-1 whitespace-nowrap text-xs font-medium text-purple-300 opacity-0 transition-opacity group-hover:opacity-100">
           Read
-          <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="h-3 w-3"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -171,7 +193,7 @@ function PostCard({ post }: { post: PostSummary }) {
         </span>
       </div>
     </Link>
-  )
+  );
 }
 
 export default async function BlogPage() {
@@ -188,13 +210,19 @@ export default async function BlogPage() {
       coverImage: true,
       publishedAt: true,
     },
-  })
+  });
 
-  const [featured, ...rest] = posts
+  const [featured, ...rest] = posts;
 
   return (
     <div className="relative min-h-screen bg-cw-dark text-white">
-      <NebulaBackdrop opacity={0.35} interactive={false} />
+      <NebulaBackdrop
+        opacity={0.35}
+        interactive={false}
+        aurora={false}
+        comets={false}
+        constellations={false}
+      />
       <div className="relative z-10">
         <SiteHeader />
 
@@ -211,7 +239,7 @@ export default async function BlogPage() {
                 >
                   Notes from the{" "}
                   <span
-                    className="inline-block bg-clip-text text-transparent"
+                    className="inline-block bg-clip-text pb-2 text-transparent"
                     style={{
                       backgroundImage:
                         "linear-gradient(90deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%)",
@@ -225,8 +253,8 @@ export default async function BlogPage() {
                   className="max-w-sm text-base leading-relaxed text-gray-400"
                   style={{ textWrap: "pretty" }}
                 >
-                  Practical essays on software, cloud, AI, and the tools we actually use. Short.
-                  Opinionated.
+                  Practical essays on software, cloud, AI, and the tools we
+                  actually use. Short. Opinionated.
                 </p>
               </div>
             </FadeIn>
@@ -234,7 +262,7 @@ export default async function BlogPage() {
 
           {posts.length === 0 ? (
             <section className="pb-24">
-              <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-16 text-center">
+              <div className="rounded-3xl border border-white/10 bg-white/2 p-16 text-center">
                 <p className="text-gray-400">No posts yet. Check back soon.</p>
               </div>
             </section>
@@ -272,5 +300,5 @@ export default async function BlogPage() {
         <SiteFooter />
       </div>
     </div>
-  )
+  );
 }

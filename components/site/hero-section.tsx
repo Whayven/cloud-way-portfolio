@@ -1,15 +1,19 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon, MegaphoneIcon } from "@heroicons/react/20/solid"
-import { StarButton } from "@/components/ui/star-button"
+import { useCallback, useEffect, useState } from "react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MegaphoneIcon,
+} from "@heroicons/react/20/solid";
+import { StarButton } from "@/components/ui/star-button";
 
 type Announcement = {
-  id: string
-  title: string
-  body: string
-  type: "info" | "warning" | "success"
-}
+  id: string;
+  title: string;
+  body: string;
+  type: "info" | "warning" | "success";
+};
 
 const typeAccent = {
   info: {
@@ -27,24 +31,31 @@ const typeAccent = {
     border: "border-emerald-400/30",
     glow: "shadow-[0_0_40px_-10px_rgba(52,211,153,0.5)]",
   },
-}
+};
 
 type StatCard = {
-  title: string
-  description: string
-  accent: string
-  ring: string
-  icon: React.ReactNode
-}
+  title: string;
+  description: string;
+  accent: string;
+  ring: string;
+  icon: React.ReactNode;
+};
 
 const STATS: StatCard[] = [
   {
-    title: "5+ Years",
-    description: "Full-stack engineering across web, cloud, and enterprise platforms.",
+    title: "6+ Years",
+    description:
+      "Full-stack engineering across web, cloud, and enterprise platforms.",
     accent: "text-purple-300",
     ring: "rgba(168,85,247,0.4)",
     icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg
+        className="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -59,7 +70,13 @@ const STATS: StatCard[] = [
     accent: "text-sky-300",
     ring: "rgba(56,189,248,0.4)",
     icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg
+        className="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -74,7 +91,13 @@ const STATS: StatCard[] = [
     accent: "text-fuchsia-300",
     ring: "rgba(236,72,153,0.4)",
     icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg
+        className="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -83,20 +106,20 @@ const STATS: StatCard[] = [
       </svg>
     ),
   },
-]
+];
 
 type Slide =
   | { kind: "announcement"; data: Announcement }
-  | { kind: "stat"; data: StatCard }
+  | { kind: "stat"; data: StatCard };
 
 function CardShell({
   children,
   extraClass = "",
   index,
 }: {
-  children: React.ReactNode
-  extraClass?: string
-  index: number
+  children: React.ReactNode;
+  extraClass?: string;
+  index: number;
 }) {
   return (
     <div
@@ -105,10 +128,10 @@ function CardShell({
         animation: `fade-slide-left 0.6s var(--ease-spring) ${0.15 * index + 0.9}s forwards`,
       }}
       onMouseMove={(e) => {
-        const el = e.currentTarget
-        const r = el.getBoundingClientRect()
-        el.style.setProperty("--mx", `${e.clientX - r.left}px`)
-        el.style.setProperty("--my", `${e.clientY - r.top}px`)
+        const el = e.currentTarget;
+        const r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+        el.style.setProperty("--my", `${e.clientY - r.top}px`);
       }}
     >
       <div
@@ -120,22 +143,24 @@ function CardShell({
       />
       <div className="relative">{children}</div>
     </div>
-  )
+  );
 }
 
 function AnnouncementCard({ a, index }: { a: Announcement; index: number }) {
-  const t = typeAccent[a.type]
+  const t = typeAccent[a.type];
   return (
     <CardShell index={index} extraClass={`${t.border} ${t.glow}`}>
       <div className={`mb-2 flex items-center gap-2.5 ${t.text}`}>
         <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06]">
           <MegaphoneIcon className="h-5 w-5" />
         </span>
-        <h3 className="text-sm font-semibold tracking-tight text-white">{a.title}</h3>
+        <h3 className="text-sm font-semibold tracking-tight text-white">
+          {a.title}
+        </h3>
       </div>
       <p className="text-xs leading-relaxed text-gray-400">{a.body}</p>
     </CardShell>
-  )
+  );
 }
 
 function StatCardView({ item, index }: { item: StatCard; index: number }) {
@@ -145,39 +170,52 @@ function StatCardView({ item, index }: { item: StatCard; index: number }) {
         <span className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06]">
           <span
             className="absolute inset-0 rounded-lg opacity-70 blur-[6px]"
-            style={{ background: `radial-gradient(circle, ${item.ring}, transparent 65%)` }}
+            style={{
+              background: `radial-gradient(circle, ${item.ring}, transparent 65%)`,
+            }}
           />
           <span className="relative">{item.icon}</span>
         </span>
-        <h3 className="text-sm font-semibold tracking-tight text-white">{item.title}</h3>
+        <h3 className="text-sm font-semibold tracking-tight text-white">
+          {item.title}
+        </h3>
       </div>
-      <p className="text-xs leading-relaxed text-gray-400">{item.description}</p>
+      <p className="text-xs leading-relaxed text-gray-400">
+        {item.description}
+      </p>
     </CardShell>
-  )
+  );
 }
 
-export function HeroSection({ announcements = [] }: { announcements?: Announcement[] }) {
+export function HeroSection({
+  announcements = [],
+}: {
+  announcements?: Announcement[];
+}) {
   const slides: Slide[] = [
     ...announcements.map((a) => ({ kind: "announcement" as const, data: a })),
     ...STATS.map((s) => ({ kind: "stat" as const, data: s })),
-  ]
-  const pageSize = 3
-  const totalPages = Math.max(1, Math.ceil(slides.length / pageSize))
-  const [page, setPage] = useState(0)
+  ];
+  const pageSize = 3;
+  const totalPages = Math.max(1, Math.ceil(slides.length / pageSize));
+  const [page, setPage] = useState(0);
 
-  const next = useCallback(() => setPage((p) => (p + 1) % totalPages), [totalPages])
+  const next = useCallback(
+    () => setPage((p) => (p + 1) % totalPages),
+    [totalPages],
+  );
   const prev = useCallback(
     () => setPage((p) => (p - 1 + totalPages) % totalPages),
     [totalPages],
-  )
+  );
 
   useEffect(() => {
-    if (totalPages <= 1) return
-    const id = setInterval(next, 6000)
-    return () => clearInterval(id)
-  }, [next, totalPages])
+    if (totalPages <= 1) return;
+    const id = setInterval(next, 6000);
+    return () => clearInterval(id);
+  }, [next, totalPages]);
 
-  const visible = slides.slice(page * pageSize, page * pageSize + pageSize)
+  const visible = slides.slice(page * pageSize, page * pageSize + pageSize);
 
   return (
     <section
@@ -189,7 +227,9 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
           {/* Eyebrow pill */}
           <div
             className="mb-6 inline-flex flex-nowrap items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-gray-300 opacity-0 backdrop-blur-md"
-            style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 0.1s forwards" }}
+            style={{
+              animation: "fade-slide-up 0.8s var(--ease-spring) 0.1s forwards",
+            }}
           >
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-ping motion-reduce:animate-none" />
@@ -202,7 +242,9 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
 
           <h1
             className="mb-6 text-5xl font-bold leading-[1.02] tracking-tight text-white opacity-0 sm:text-6xl md:text-7xl lg:text-[88px]"
-            style={{ animation: "fade-slide-up 0.9s var(--ease-spring) 0.3s forwards" }}
+            style={{
+              animation: "fade-slide-up 0.9s var(--ease-spring) 0.3s forwards",
+            }}
           >
             <span className="block">We are</span>
             <span className="relative block">
@@ -235,13 +277,15 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
               textWrap: "pretty",
             }}
           >
-            We build full-stack applications that help businesses scale, streamline operations, and
-            stand out online.
+            We build full-stack applications that help businesses scale,
+            streamline operations, and stand out online.
           </p>
 
           <div
             className="flex flex-wrap items-center gap-3 opacity-0"
-            style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 0.85s forwards" }}
+            style={{
+              animation: "fade-slide-up 0.8s var(--ease-spring) 0.85s forwards",
+            }}
           >
             <StarButton href="/work">View Work</StarButton>
             <StarButton href="/#contact" variant="ghost">
@@ -273,7 +317,10 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
           {totalPages > 1 && (
             <div
               className="flex items-center gap-3 opacity-0"
-              style={{ animation: "fade-slide-up 0.6s var(--ease-spring) 1.3s forwards" }}
+              style={{
+                animation:
+                  "fade-slide-up 0.6s var(--ease-spring) 1.3s forwards",
+              }}
             >
               <button
                 onClick={prev}
@@ -311,20 +358,22 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
       {/* Scroll indicator */}
       <button
         onClick={() => {
-          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          const reduceMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
           document.getElementById("content")?.scrollIntoView({
             behavior: reduceMotion ? "auto" : "smooth",
-          })
+          });
         }}
         className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 opacity-0 motion-safe:animate-[fade-slide-up_0.8s_var(--ease-spring)_1.5s_forwards] motion-reduce:opacity-100"
         aria-label="Scroll to content"
       >
         <span className="flex flex-col items-center gap-2.5 text-gray-400 transition-colors hover:text-white">
-          <span className="text-[10px] font-medium uppercase tracking-[0.3em]">Scroll</span>
+          <span className="text-[10px] font-medium uppercase tracking-[0.3em]">
+            Scroll
+          </span>
           <span className="relative flex h-10 w-6 items-start justify-center rounded-full border border-white/20 p-1.5">
-            <span
-              className="h-2 w-1 rounded-full bg-linear-to-b from-white to-purple-400 motion-safe:animate-[scroll-dot_2s_ease-in-out_infinite]"
-            />
+            <span className="h-2 w-1 rounded-full bg-linear-to-b from-white to-purple-400 motion-safe:animate-[scroll-dot_2s_ease-in-out_infinite]" />
           </span>
         </span>
       </button>
@@ -332,7 +381,9 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
       {/* Socials */}
       <div
         className="absolute bottom-8 left-6 z-10 flex items-center gap-4 opacity-0 sm:left-10"
-        style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 1.4s forwards" }}
+        style={{
+          animation: "fade-slide-up 0.8s var(--ease-spring) 1.4s forwards",
+        }}
       >
         {[
           {
@@ -371,5 +422,5 @@ export function HeroSection({ announcements = [] }: { announcements?: Announceme
         ))}
       </div>
     </section>
-  )
+  );
 }

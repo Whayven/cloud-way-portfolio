@@ -3,63 +3,66 @@
 import { useMemo, useState } from "react"
 import { WorkGrid, type WorkGridItem } from "@/components/site/work-grid"
 
-const CATEGORIES = ["All", "Web app", "Analytics", "Mobile", "Ops"] as const
-type Category = (typeof CATEGORIES)[number]
-
-function categorize(techStack: string[]): Category {
-  const haystack = techStack.join(" ").toLowerCase()
-  if (/(react native|expo|ios|android|swift|kotlin|mobile)/.test(haystack)) return "Mobile"
-  if (/(clickhouse|d3|dashboard|chart|snowflake|duckdb|analytics|bigquery)/.test(haystack))
-    return "Analytics"
-  if (
-    /(airflow|temporal|queue|cron|pipeline|zapier|ops|devops|docker|k8s|kubernetes|terraform|helm|monitoring|prometheus|grafana|ci\/cd|ci-cd|github actions|aws|gcp|azure|cloudflare|infra|infrastructure)/.test(
-      haystack,
-    )
-  )
-    return "Ops"
-  return "Web app"
-}
-
 export function WorkFilter({ items }: { items: WorkGridItem[] }) {
-  const [active, setActive] = useState<Category>("All")
+  const [query, setQuery] = useState("")
 
-  const enriched = useMemo(
-    () => items.map((it) => ({ ...it, category: categorize(it.techStack) })),
-    [items],
-  )
+  const trimmed = query.trim().toLowerCase()
 
-  const counts = useMemo(() => {
-    const c: Record<Category, number> = { All: enriched.length, "Web app": 0, Analytics: 0, Mobile: 0, Ops: 0 }
-    for (const it of enriched) c[it.category]++
-    return c
-  }, [enriched])
-
-  const visible = active === "All" ? enriched : enriched.filter((it) => it.category === active)
+  const visible = useMemo(() => {
+    if (!trimmed) return items
+    return items.filter((it) => {
+      const haystack = [it.title, it.summary, ...it.techStack]
+        .join(" ")
+        .toLowerCase()
+      return haystack.includes(trimmed)
+    })
+  }, [items, trimmed])
 
   return (
     <>
       <div className="pb-6">
-        <div className="sticky top-20 z-30 flex flex-wrap items-center gap-2 rounded-full border border-white/10 bg-cw-dark/70 p-1.5 backdrop-blur-md sm:w-fit">
-          {CATEGORIES.map((c) => (
-            <button
-              key={c}
-              onClick={() => setActive(c)}
-              aria-pressed={active === c}
-              className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-300 ${
-                active === c
-                  ? "bg-linear-to-r from-purple-500 to-fuchsia-500 text-white shadow-[0_0_20px_-5px_rgba(168,85,247,0.6)]"
-                  : "text-gray-400 hover:bg-white/5 hover:text-white"
-              }`}
-            >
-              {c}
-              <span className="ml-2 text-[10px] opacity-70">{counts[c]}</span>
-            </button>
-          ))}
+        <div className="sticky top-20 z-30 flex items-center gap-3 rounded-full border border-white/10 bg-cw-dark/70 px-4 py-2 backdrop-blur-md sm:max-w-md">
+          <svg
+            className="h-4 w-4 shrink-0 text-white/50"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path strokeLinecap="round" d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search projects, tech, keywords…"
+            aria-label="Search projects"
+            className="min-w-0 flex-1 bg-transparent text-sm text-white placeholder:text-white/40 focus:outline-none"
+          />
+          <span className="shrink-0 text-[10px] font-medium uppercase tracking-widest text-white/40">
+            {visible.length}
+            <span className="ml-1 normal-case tracking-normal text-white/30">
+              {visible.length === 1 ? "result" : "results"}
+            </span>
+          </span>
         </div>
       </div>
-      <WorkGrid
-        items={visible.map((it, i) => ({ ...it, featured: active === "All" && i === 0 }))}
-      />
+      {visible.length === 0 ? (
+        <div className="mx-auto mt-14 max-w-3xl rounded-3xl border border-white/10 bg-white/2 p-16 text-center">
+          <p className="text-gray-400">
+            No projects match &ldquo;{query.trim()}&rdquo;.
+          </p>
+        </div>
+      ) : (
+        <WorkGrid
+          items={visible.map((it, i) => ({
+            ...it,
+            featured: !trimmed && i === 0,
+          }))}
+        />
+      )}
     </>
   )
 }

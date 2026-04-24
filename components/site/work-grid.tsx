@@ -40,18 +40,18 @@ const cardVariants = {
   }),
 }
 
-const BAR_HEIGHTS = [40, 70, 55, 85, 60, 90, 75, 95, 80]
-
 function ProductMock({
   gradient,
   metric,
   imageUrl,
   title,
+  priority,
 }: {
   gradient: string
   metric: string
   imageUrl: string | null
   title: string
+  priority?: boolean
 }) {
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -61,6 +61,7 @@ function ProductMock({
           alt={title}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
+          priority={priority}
           className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
         />
       ) : (
@@ -90,15 +91,6 @@ function ProductMock({
           {metric}
         </div>
       )}
-      <div className="absolute inset-x-6 bottom-6 flex h-16 items-end gap-2">
-        {BAR_HEIGHTS.map((h, j) => (
-          <span
-            key={j}
-            className="flex-1 rounded-t bg-white/80 transition-all duration-500 group-hover:bg-white"
-            style={{ height: `${h}%`, opacity: 0.25 + (j / 9) * 0.6 }}
-          />
-        ))}
-      </div>
       <div className="absolute inset-0 bg-linear-to-t from-cw-dark/60 via-transparent to-transparent" />
     </div>
   )
@@ -139,6 +131,7 @@ export function WorkGrid({ items }: { items: WorkGridItem[] }) {
                   metric={metric}
                   imageUrl={item.imageUrl}
                   title={item.title}
+                  priority={i === 0}
                 />
               </div>
               <div className="relative p-6 sm:p-7">
