@@ -40,8 +40,6 @@ const cardVariants = {
   }),
 }
 
-const BAR_HEIGHTS = [40, 70, 55, 85, 60, 90, 75, 95, 80]
-
 function ProductMock({
   gradient,
   metric,
@@ -93,15 +91,6 @@ function ProductMock({
           {metric}
         </div>
       )}
-      <div className="absolute inset-x-6 bottom-6 flex h-16 items-end gap-2">
-        {BAR_HEIGHTS.map((h, j) => (
-          <span
-            key={j}
-            className="flex-1 rounded-t bg-white/80 transition-all duration-500 group-hover:bg-white"
-            style={{ height: `${h}%`, opacity: 0.25 + (j / 9) * 0.6 }}
-          />
-        ))}
-      </div>
       <div className="absolute inset-0 bg-linear-to-t from-cw-dark/60 via-transparent to-transparent" />
     </div>
   )

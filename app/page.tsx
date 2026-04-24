@@ -1,9 +1,9 @@
 import {
   AboutSection,
   CtaSection,
+  FaqSection,
   ProcessSection,
   ServicesSection,
-  TestimonialsSection,
   WorkSection,
 } from "@/components/site/content-sections"
 import { ContactSection } from "@/components/site/contact-section"
@@ -38,7 +38,7 @@ export default async function Home() {
           <ServicesSection />
           <ProcessSection />
           <WorkSection />
-          <TestimonialsSection />
+          <FaqSection />
           <CtaSection />
           <ContactSection />
         </main>

@@ -327,63 +327,60 @@ export async function WorkSection() {
   )
 }
 
-/* ---------- Testimonials ---------- */
+/* ---------- FAQ ---------- */
 
-const QUOTES = [
+const FAQS = [
   {
-    body: "CloudWay behaves like a senior team that already knows our codebase on day one. Rare.",
-    author: "Priya N.",
-    role: "VP Engineering, Helios",
-    avatar: "linear-gradient(135deg, #a855f7, #ec4899)",
+    q: "How do you price projects?",
+    a: "Fixed scope, fixed price for well-defined work. Weekly retainer when the scope is still moving. I don't bill hourly — it rewards the wrong thing.",
   },
   {
-    body: "Three quarters in and they're still the most reliable shippers on the roster. Highly recommend.",
-    author: "Marcus K.",
-    role: "CTO, Nova Logistics",
-    avatar: "linear-gradient(135deg, #38bdf8, #6366f1)",
+    q: "What does a typical engagement look like?",
+    a: "A short discovery call, a written scope, and a working slice inside the first week. From there: weekly deploys and a short async update so you see progress without meetings.",
   },
   {
-    body: "They redesigned our ops flow in two weeks. Saved us a full hire.",
-    author: "Elena R.",
-    role: "COO, Atlas",
-    avatar: "linear-gradient(135deg, #34d399, #a855f7)",
+    q: "Do you handle design too?",
+    a: "Yes. Most of the site you're on was designed and built by the same person — me. For larger visual systems I'll partner with a designer, but I can ship polished UI on my own.",
+  },
+  {
+    q: "Will you work with my existing team?",
+    a: "Often. I slot in as an extra senior pair of hands — reviewing PRs, pairing on hard bits, or owning a feature end-to-end. Tell me the shape and I'll meet it.",
+  },
+  {
+    q: "What if the project doesn't go well?",
+    a: "We catch it early. Week-one prototype exists so we can kill bad assumptions before they compound. If we're not a fit after that first slice, we part ways cleanly — no retainer trap.",
   },
 ]
 
-export function TestimonialsSection() {
+export function FaqSection() {
   return (
     <section className="relative border-t border-white/10 py-24 sm:py-32">
       <SectionHeading
-        eyebrow="What teams say"
+        eyebrow="Common questions"
         title={
           <>
-            Kind words from <span className="text-white/40">real launches.</span>
+            The stuff people <span className="text-white/40">always ask.</span>
           </>
         }
       />
-      <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-5 px-2 md:grid-cols-3">
-        {QUOTES.map((q, i) => (
-          <FadeIn key={q.author} index={i + 1}>
-            <figure className="group relative h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl transition-all duration-500 hover:border-white/25 hover:bg-white/[0.06]">
-              <svg className="h-6 w-6 text-purple-300/70" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
-              </svg>
-              <blockquote
-                className="mt-5 text-lg leading-relaxed text-white/90"
-                style={{ textWrap: "pretty" }}
-              >
-                &ldquo;{q.body}&rdquo;
-              </blockquote>
-              <figcaption className="mt-6 flex items-center gap-3">
-                <span className="h-9 w-9 rounded-full" style={{ background: q.avatar }} />
-                <div>
-                  <p className="text-sm font-semibold text-white">{q.author}</p>
-                  <p className="text-xs text-gray-400">{q.role}</p>
-                </div>
-              </figcaption>
-            </figure>
-          </FadeIn>
-        ))}
+      <div className="mx-auto mt-14 max-w-3xl px-2">
+        <ul className="divide-y divide-white/10 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
+          {FAQS.map((item, i) => (
+            <FadeIn key={item.q} index={i + 1}>
+              <li className="p-7 sm:p-8">
+                <h3 className="text-lg font-semibold tracking-tight text-white">
+                  {item.q}
+                </h3>
+                <p
+                  className="mt-3 text-sm leading-relaxed text-gray-400 sm:text-base"
+                  style={{ textWrap: "pretty" }}
+                >
+                  {item.a}
+                </p>
+              </li>
+            </FadeIn>
+          ))}
+        </ul>
       </div>
     </section>
   )
