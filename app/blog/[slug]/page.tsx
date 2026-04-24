@@ -20,7 +20,7 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const post = await prisma.blogPost.findUnique({
-    where: { slug },
+    where: { slug, status: ContentStatus.published },
     select: { title: true, excerpt: true },
   });
   if (!post) return { title: "Post Not Found" };
