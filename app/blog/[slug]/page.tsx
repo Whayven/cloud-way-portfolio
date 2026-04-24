@@ -1,57 +1,63 @@
-import Image from "next/image"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { ArticleShareRail } from "@/components/site/article-share-rail"
-import { ArticleToc } from "@/components/site/article-toc"
-import { FadeIn } from "@/components/site/animated-section"
-import { NebulaBackdrop } from "@/components/site/nebula-backdrop"
-import { ReadingProgress } from "@/components/site/reading-progress"
-import { SiteFooter } from "@/components/site/site-footer"
-import { SiteHeader } from "@/components/site/site-header"
-import { prisma } from "@/lib/db"
-import { ContentStatus } from "@/lib/generated/prisma/client"
-import { extractH2Headings, formatDate, readingTime } from "@/lib/utils"
-import { BlogBody } from "./blog-body"
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArticleShareRail } from "@/components/site/article-share-rail";
+import { ArticleToc } from "@/components/site/article-toc";
+import { FadeIn } from "@/components/site/animated-section";
+import { NebulaBackdrop } from "@/components/site/nebula-backdrop";
+import { ReadingProgress } from "@/components/site/reading-progress";
+import { SiteFooter } from "@/components/site/site-footer";
+import { SiteHeader } from "@/components/site/site-header";
+import { prisma } from "@/lib/db";
+import { ContentStatus } from "@/lib/generated/prisma/client";
+import { extractH2Headings, formatDate, readingTime } from "@/lib/utils";
+import { BlogBody } from "./blog-body";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params
+  const { slug } = await params;
   const post = await prisma.blogPost.findUnique({
     where: { slug },
     select: { title: true, excerpt: true },
-  })
-  if (!post) return { title: "Post Not Found" }
+  });
+  if (!post) return { title: "Post Not Found" };
   return {
     title: post.title,
     description: post.excerpt,
-  }
+  };
 }
 
 export default async function BlogPostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params
+  const { slug } = await params;
   const post = await prisma.blogPost.findUnique({
     where: { slug, status: ContentStatus.published },
-  })
-  if (!post) notFound()
+  });
+  if (!post) notFound();
 
-  const toc = extractH2Headings(post.body)
-  const readMinutes = readingTime(post.body)
+  const toc = extractH2Headings(post.body);
+  const readMinutes = readingTime(post.body);
 
   return (
     <div className="relative min-h-screen bg-cw-dark text-white">
       <ReadingProgress />
-      <NebulaBackdrop opacity={0.3} interactive={false} />
+      <NebulaBackdrop
+        opacity={0.3}
+        interactive={false}
+        aurora={false}
+        comets={false}
+        constellations={false}
+      />
       <div className="relative z-10">
         <SiteHeader />
 
-        <main className="relative mx-auto w-full max-w-[85rem] px-6 sm:px-10">
+        <main className="relative mx-auto w-full max-w-wide px-6 sm:px-10">
           {/* Back */}
           <div className="pt-10">
             <Link
@@ -80,13 +86,17 @@ export default async function BlogPostPage({
             <FadeIn>
               <div className="flex flex-wrap items-center gap-3 text-[10px] font-medium uppercase tracking-[0.3em] text-white/40">
                 <span className="whitespace-nowrap rounded-full bg-purple-500/15 px-2.5 py-1 text-purple-300">
-                  Field notes
+                  Article
                 </span>
                 {post.publishedAt && (
-                  <span className="whitespace-nowrap">{formatDate(post.publishedAt)}</span>
+                  <span className="whitespace-nowrap">
+                    {formatDate(post.publishedAt)}
+                  </span>
                 )}
                 <span className="h-px w-5 bg-white/20" />
-                <span className="whitespace-nowrap">{readMinutes} min read</span>
+                <span className="whitespace-nowrap">
+                  {readMinutes} min read
+                </span>
               </div>
             </FadeIn>
             <FadeIn index={1}>
@@ -109,13 +119,17 @@ export default async function BlogPostPage({
               <div className="mt-8 flex items-center gap-3 border-t border-white/10 pt-6">
                 <span
                   className="flex h-10 w-10 items-center justify-center rounded-full text-xs font-semibold"
-                  style={{ background: "linear-gradient(135deg, #a855f7, #ec4899)" }}
+                  style={{
+                    background: "linear-gradient(135deg, #a855f7, #ec4899)",
+                  }}
                 >
-                  CW
+                  WF
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-white">CloudWay Studio</p>
-                  <p className="text-xs text-white/50">Field notes from the team</p>
+                  <p className="text-sm font-semibold text-white">
+                    Wayne Foster Jr
+                  </p>
+                  <p className="text-xs text-white/50">Full-stack developer</p>
                 </div>
               </div>
             </FadeIn>
@@ -124,8 +138,8 @@ export default async function BlogPostPage({
           {/* Cover */}
           <div className="mx-auto mt-12 max-w-4xl">
             <FadeIn>
-              <figure className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
-                <div className="relative aspect-[21/10]">
+              <figure className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/2">
+                <div className="relative aspect-21/10">
                   {post.coverImage ? (
                     <Image
                       src={post.coverImage}
@@ -161,34 +175,41 @@ export default async function BlogPostPage({
           </div>
 
           {/* Article body + rails */}
-          <div className="mx-auto mt-16 grid max-w-[78rem] grid-cols-1 gap-10 lg:grid-cols-[auto_minmax(0,42rem)_auto] lg:gap-14">
+          <div className="mx-auto mt-16 grid max-w-312 grid-cols-1 gap-10 lg:grid-cols-[auto_minmax(0,42rem)_auto] lg:gap-14">
             <ArticleShareRail title={post.title} />
 
             <article className="mx-auto w-full max-w-2xl">
               <BlogBody content={post.body} />
 
               {/* Author card */}
-              <section className="mt-16 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+              <section className="mt-16 rounded-2xl border border-white/10 bg-white/2 p-6">
                 <div className="flex items-start gap-4">
                   <span
                     className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-sm font-semibold"
-                    style={{ background: "linear-gradient(135deg, #a855f7, #ec4899)" }}
+                    style={{
+                      background: "linear-gradient(135deg, #a855f7, #ec4899)",
+                    }}
                   >
-                    CW
+                    WF
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-white">CloudWay Studio</p>
-                    <p className="text-xs text-white/50">Field notes from the team</p>
+                    <p className="text-sm font-semibold text-white">
+                      Wayne Foster Jr
+                    </p>
+                    <p className="text-xs text-white/50">
+                      Full-stack developer
+                    </p>
                     <p className="mt-3 text-sm leading-relaxed text-gray-400">
-                      Full-stack applications, AI features, and cloud architecture — practical
-                      essays on the software we build day to day.
+                      Full-stack applications, AI features, and cloud
+                      architecture — my notes on the software I build day to
+                      day, and my journey as a developer.
                     </p>
                   </div>
                 </div>
               </section>
 
               {/* All articles */}
-              <div className="mt-12 text-center">
+              <div className="mt-12 mb-6 text-center">
                 <Link
                   href="/blog"
                   className="inline-flex items-center gap-2 text-sm font-medium text-purple-300 transition-colors hover:text-white"
@@ -218,5 +239,5 @@ export default async function BlogPostPage({
         <SiteFooter />
       </div>
     </div>
-  )
+  );
 }

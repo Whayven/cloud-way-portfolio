@@ -41,7 +41,7 @@ function makeH2Renderer() {
 function Pre({ children }: ComponentPropsWithoutRef<"pre">) {
   // Window-chrome wrapper around fenced code blocks for the design's look.
   return (
-    <div className="my-8 overflow-hidden rounded-2xl border border-white/10 bg-[#0b0d12] not-prose">
+    <div className="my-8 overflow-hidden rounded-2xl border border-white/10 bg-cw-dark not-prose">
       <div className="flex items-center justify-between border-b border-white/5 px-4 py-2.5">
         <div className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-red-400/60" />

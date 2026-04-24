@@ -47,11 +47,13 @@ function ProductMock({
   metric,
   imageUrl,
   title,
+  priority,
 }: {
   gradient: string
   metric: string
   imageUrl: string | null
   title: string
+  priority?: boolean
 }) {
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -61,6 +63,7 @@ function ProductMock({
           alt={title}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
+          priority={priority}
           className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
         />
       ) : (
@@ -139,6 +142,7 @@ export function WorkGrid({ items }: { items: WorkGridItem[] }) {
                   metric={metric}
                   imageUrl={item.imageUrl}
                   title={item.title}
+                  priority={i === 0}
                 />
               </div>
               <div className="relative p-6 sm:p-7">

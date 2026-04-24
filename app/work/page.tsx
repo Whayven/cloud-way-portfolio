@@ -1,29 +1,29 @@
-import { FadeIn } from "@/components/site/animated-section"
-import { NebulaBackdrop } from "@/components/site/nebula-backdrop"
-import { PageEyebrow } from "@/components/site/page-eyebrow"
-import { SiteFooter } from "@/components/site/site-footer"
-import { SiteHeader } from "@/components/site/site-header"
-import { StarButton } from "@/components/ui/star-button"
-import { WorkFilter } from "@/components/site/work-filter"
-import { prisma } from "@/lib/db"
+import { FadeIn } from "@/components/site/animated-section";
+import { NebulaBackdrop } from "@/components/site/nebula-backdrop";
+import { PageEyebrow } from "@/components/site/page-eyebrow";
+import { SiteFooter } from "@/components/site/site-footer";
+import { SiteHeader } from "@/components/site/site-header";
+import { StarButton } from "@/components/ui/star-button";
+import { WorkFilter } from "@/components/site/work-filter";
+import { prisma } from "@/lib/db";
 
 export const metadata = {
   title: "Work",
   description: "Explore our portfolio of projects and case studies.",
-}
+};
 
 const STATS = [
-  { n: "40+", l: "Teams shipped with" },
-  { n: "12", l: "Industries served" },
-  { n: "5 yrs", l: "Avg. client tenure" },
-  { n: "4.9", l: "Project retro score" },
-]
+  { n: "6+ years", l: "Shipping production software" },
+  { n: "Full-stack", l: "From UI to database" },
+  { n: "< 24h", l: "Response time" },
+  { n: "2+", l: "Open client slots" },
+];
 
 export default async function WorkPage() {
   const items = await prisma.portfolioItem.findMany({
     where: { status: "published" },
     orderBy: { sortOrder: "asc" },
-  })
+  });
 
   const gridItems = items.map((item) => ({
     slug: item.slug,
@@ -31,15 +31,21 @@ export default async function WorkPage() {
     summary: item.summary,
     imageUrl: item.imageUrl,
     techStack: item.techStack,
-  }))
+  }));
 
   return (
     <div className="relative min-h-screen bg-cw-dark text-white">
-      <NebulaBackdrop opacity={0.35} interactive={false} />
+      <NebulaBackdrop
+        opacity={0.35}
+        interactive={false}
+        aurora={false}
+        comets={false}
+        constellations={false}
+      />
       <div className="relative z-10">
         <SiteHeader />
 
-        <main className="relative mx-auto w-full max-w-[85rem] px-6 sm:px-10">
+        <main className="relative mx-auto w-full max-w-wide px-6 sm:px-10">
           <section className="relative py-20 sm:py-28">
             <FadeIn>
               <PageEyebrow>Selected work</PageEyebrow>
@@ -51,7 +57,7 @@ export default async function WorkPage() {
               >
                 Products that did the{" "}
                 <span
-                  className="inline-block bg-clip-text text-transparent"
+                  className="inline-block bg-clip-text pb-2 text-transparent"
                   style={{
                     backgroundImage:
                       "linear-gradient(90deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%)",
@@ -67,7 +73,8 @@ export default async function WorkPage() {
                 className="mt-6 max-w-xl text-base leading-relaxed text-gray-400 sm:text-lg"
                 style={{ textWrap: "pretty" }}
               >
-                A selection of engagements from the last few years. Quiet craft, measurable outcomes.
+                A selection of engagements from the last few years. Quiet craft,
+                measurable outcomes.
               </p>
             </FadeIn>
 
@@ -76,9 +83,11 @@ export default async function WorkPage() {
                 {STATS.map((s) => (
                   <div
                     key={s.l}
-                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl"
+                    className="rounded-2xl border border-white/10 bg-white/3 p-5 backdrop-blur-xl"
                   >
-                    <p className="text-3xl font-semibold tracking-tight text-white">{s.n}</p>
+                    <p className="text-3xl font-semibold tracking-tight text-white">
+                      {s.n}
+                    </p>
                     <p className="mt-1 text-xs text-gray-400">{s.l}</p>
                   </div>
                 ))}
@@ -90,7 +99,7 @@ export default async function WorkPage() {
 
           <section className="pb-24 pt-16">
             <FadeIn>
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-12 sm:p-16">
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/2 p-12 sm:p-16">
                 <div
                   className="pointer-events-none absolute inset-0"
                   style={{
@@ -118,5 +127,5 @@ export default async function WorkPage() {
         <SiteFooter />
       </div>
     </div>
-  )
+  );
 }
