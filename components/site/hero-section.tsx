@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { GradientText } from "@/components/site/gradient-text"
-import { StarButton } from "@/components/ui/star-button"
+import { useCallback, useEffect, useState } from "react"
 import { ChevronLeftIcon, ChevronRightIcon, MegaphoneIcon } from "@heroicons/react/20/solid"
+import { StarButton } from "@/components/ui/star-button"
 
 type Announcement = {
   id: string
@@ -13,219 +12,285 @@ type Announcement = {
 }
 
 const typeAccent = {
-  info: "text-sky-400",
-  warning: "text-amber-400",
-  success: "text-emerald-400",
+  info: {
+    text: "text-sky-300",
+    border: "border-sky-400/30",
+    glow: "shadow-[0_0_40px_-10px_rgba(56,189,248,0.5)]",
+  },
+  warning: {
+    text: "text-amber-300",
+    border: "border-amber-400/30",
+    glow: "shadow-[0_0_40px_-10px_rgba(251,191,36,0.5)]",
+  },
+  success: {
+    text: "text-emerald-300",
+    border: "border-emerald-400/30",
+    glow: "shadow-[0_0_40px_-10px_rgba(52,211,153,0.5)]",
+  },
 }
 
-const typeBorder = {
-  info: "border-sky-400/30",
-  warning: "border-amber-400/30",
-  success: "border-emerald-400/30",
+type StatCard = {
+  title: string
+  description: string
+  accent: string
+  ring: string
+  icon: React.ReactNode
 }
 
-const stats = [
+const STATS: StatCard[] = [
   {
-    icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-      </svg>
-    ),
     title: "5+ Years",
-    description: "Full stack development across web, cloud, and enterprise platforms.",
-  },
-  {
+    description: "Full-stack engineering across web, cloud, and enterprise platforms.",
+    accent: "text-purple-300",
+    ring: "rgba(168,85,247,0.4)",
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"
+        />
       </svg>
     ),
+  },
+  {
     title: "Cloud Native",
-    description: "Hands-on experience with AWS, Azure, and Salesforce ecosystems.",
-  },
-  {
+    description: "Hands-on with AWS, Azure, and the Salesforce ecosystem.",
+    accent: "text-sky-300",
+    ring: "rgba(56,189,248,0.4)",
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"
+        />
       </svg>
     ),
+  },
+  {
     title: "AI-Driven",
-    description: "Modern solutions powered by AI and automation.",
+    description: "Modern solutions powered by AI and intelligent automation.",
+    accent: "text-fuchsia-300",
+    ring: "rgba(236,72,153,0.4)",
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"
+        />
+      </svg>
+    ),
   },
 ]
 
-/* Deterministic star positions — generated once at build time */
-const stars = [
-  { x: 5, y: 8, size: 1, delay: 0, duration: 3 },
-  { x: 12, y: 15, size: 1.5, delay: 1.2, duration: 4 },
-  { x: 25, y: 5, size: 1, delay: 0.5, duration: 3.5 },
-  { x: 30, y: 22, size: 2, delay: 2, duration: 5 },
-  { x: 35, y: 70, size: 1, delay: 0.8, duration: 3 },
-  { x: 40, y: 45, size: 1.5, delay: 1.5, duration: 4.5 },
-  { x: 48, y: 12, size: 1, delay: 0.3, duration: 3.2 },
-  { x: 55, y: 80, size: 2, delay: 2.5, duration: 5 },
-  { x: 60, y: 30, size: 1, delay: 1, duration: 3.8 },
-  { x: 65, y: 55, size: 1.5, delay: 0.7, duration: 4.2 },
-  { x: 72, y: 18, size: 1, delay: 1.8, duration: 3 },
-  { x: 78, y: 65, size: 2, delay: 0.2, duration: 4.8 },
-  { x: 82, y: 40, size: 1, delay: 2.2, duration: 3.5 },
-  { x: 88, y: 8, size: 1.5, delay: 1.3, duration: 4 },
-  { x: 92, y: 75, size: 1, delay: 0.6, duration: 3.3 },
-  { x: 15, y: 88, size: 1.5, delay: 1.9, duration: 4.5 },
-  { x: 45, y: 92, size: 1, delay: 0.4, duration: 3.7 },
-  { x: 70, y: 85, size: 2, delay: 2.8, duration: 5 },
-  { x: 95, y: 50, size: 1, delay: 1.1, duration: 3.1 },
-  { x: 8, y: 42, size: 1.5, delay: 2.3, duration: 4.3 },
-  { x: 20, y: 60, size: 1, delay: 0.9, duration: 3.6 },
-  { x: 50, y: 35, size: 2, delay: 1.6, duration: 4.8 },
-  { x: 85, y: 25, size: 1, delay: 2.1, duration: 3.4 },
-  { x: 3, y: 72, size: 1.5, delay: 0.1, duration: 4.1 },
-  { x: 58, y: 58, size: 1, delay: 1.4, duration: 3.9 },
-]
+type Slide =
+  | { kind: "announcement"; data: Announcement }
+  | { kind: "stat"; data: StatCard }
 
-type CardSlide =
-  | { kind: "stat"; title: string; description: string; icon: React.ReactNode }
-  | { kind: "announcement"; announcement: Announcement }
-
-export function HeroSection({
-  announcements = [],
+function CardShell({
+  children,
+  extraClass = "",
+  index,
 }: {
-  announcements?: Announcement[]
+  children: React.ReactNode
+  extraClass?: string
+  index: number
 }) {
-  const slides: CardSlide[] = [
-    ...announcements.map(
-      (a) => ({ kind: "announcement" as const, announcement: a }),
-    ),
-    ...stats.map((s) => ({ kind: "stat" as const, ...s })),
-  ]
+  return (
+    <div
+      className={`group relative w-64 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 opacity-0 backdrop-blur-xl transition-all duration-500 hover:border-white/25 hover:bg-white/[0.07] ${extraClass}`}
+      style={{
+        animation: `fade-slide-left 0.6s var(--ease-spring) ${0.15 * index + 0.9}s forwards`,
+      }}
+      onMouseMove={(e) => {
+        const el = e.currentTarget
+        const r = el.getBoundingClientRect()
+        el.style.setProperty("--mx", `${e.clientX - r.left}px`)
+        el.style.setProperty("--my", `${e.clientY - r.top}px`)
+      }}
+    >
+      <div
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{
+          background:
+            "radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%), rgba(168,85,247,0.25), transparent 60%)",
+        }}
+      />
+      <div className="relative">{children}</div>
+    </div>
+  )
+}
 
-  // Show 3 cards at a time, paginate through groups
+function AnnouncementCard({ a, index }: { a: Announcement; index: number }) {
+  const t = typeAccent[a.type]
+  return (
+    <CardShell index={index} extraClass={`${t.border} ${t.glow}`}>
+      <div className={`mb-2 flex items-center gap-2.5 ${t.text}`}>
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06]">
+          <MegaphoneIcon className="h-5 w-5" />
+        </span>
+        <h3 className="text-sm font-semibold tracking-tight text-white">{a.title}</h3>
+      </div>
+      <p className="text-xs leading-relaxed text-gray-400">{a.body}</p>
+    </CardShell>
+  )
+}
+
+function StatCardView({ item, index }: { item: StatCard; index: number }) {
+  return (
+    <CardShell index={index}>
+      <div className={`mb-2 flex items-center gap-2.5 ${item.accent}`}>
+        <span className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06]">
+          <span
+            className="absolute inset-0 rounded-lg opacity-70 blur-[6px]"
+            style={{ background: `radial-gradient(circle, ${item.ring}, transparent 65%)` }}
+          />
+          <span className="relative">{item.icon}</span>
+        </span>
+        <h3 className="text-sm font-semibold tracking-tight text-white">{item.title}</h3>
+      </div>
+      <p className="text-xs leading-relaxed text-gray-400">{item.description}</p>
+    </CardShell>
+  )
+}
+
+export function HeroSection({ announcements = [] }: { announcements?: Announcement[] }) {
+  const slides: Slide[] = [
+    ...announcements.map((a) => ({ kind: "announcement" as const, data: a })),
+    ...STATS.map((s) => ({ kind: "stat" as const, data: s })),
+  ]
   const pageSize = 3
-  const totalPages = Math.ceil(slides.length / pageSize)
+  const totalPages = Math.max(1, Math.ceil(slides.length / pageSize))
   const [page, setPage] = useState(0)
 
-  const next = useCallback(
-    () => setPage((p) => (p + 1) % totalPages),
-    [totalPages],
-  )
+  const next = useCallback(() => setPage((p) => (p + 1) % totalPages), [totalPages])
   const prev = useCallback(
     () => setPage((p) => (p - 1 + totalPages) % totalPages),
     [totalPages],
   )
 
-  // Auto-advance every 5s when there are multiple pages
   useEffect(() => {
     if (totalPages <= 1) return
-    const id = setInterval(next, 5000)
+    const id = setInterval(next, 6000)
     return () => clearInterval(id)
-  }, [totalPages, next])
+  }, [next, totalPages])
 
-  const visibleSlides = slides.slice(
-    page * pageSize,
-    page * pageSize + pageSize,
-  )
+  const visible = slides.slice(page * pageSize, page * pageSize + pageSize)
 
   return (
-    <section className="relative isolate flex min-h-[calc(100vh-4.5rem)] w-full items-center overflow-hidden">
-
-      {/* ── Star field ── */}
-      <div className="pointer-events-none absolute inset-0 z-[2]" aria-hidden>
-        {stars.map((star, i) => (
-          <span
-            key={i}
-            className="absolute rounded-full bg-white animate-[twinkle_var(--tw-duration)_ease-in-out_var(--tw-delay)_infinite]"
-            style={{
-              left: `${star.x}%`,
-              top: `${star.y}%`,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              "--tw-delay": `${star.delay}s`,
-              "--tw-duration": `${star.duration}s`,
-            } as React.CSSProperties}
-          />
-        ))}
-      </div>
-
-      {/* ── Shooting stars ── */}
-      <div className="pointer-events-none absolute inset-0 z-[2]" aria-hidden>
-        <span className="absolute left-[15%] top-[10%] h-px w-20 rotate-[215deg] animate-[shoot_6s_ease-in_2s_infinite] rounded bg-linear-to-r from-white/80 to-transparent opacity-0" />
-        <span className="absolute left-[60%] top-[5%] h-px w-28 rotate-[220deg] animate-[shoot_8s_ease-in_5s_infinite] rounded bg-linear-to-r from-white/70 to-transparent opacity-0" />
-        <span className="absolute left-[40%] top-[15%] h-px w-16 rotate-[210deg] animate-[shoot_7s_ease-in_8s_infinite] rounded bg-linear-to-r from-white/60 to-transparent opacity-0" />
-      </div>
-
-      {/* ── Content ── */}
-      <div className="relative z-10 mx-auto flex w-full max-w-[85rem] items-center justify-between px-6 py-32 sm:px-10">
-        {/* Left: headline + CTA */}
+    <section
+      data-cursor-glow-container
+      className="relative isolate flex min-h-[calc(100vh-4.5rem)] w-full items-center overflow-hidden"
+    >
+      <div className="relative z-10 mx-auto flex w-full max-w-[85rem] items-center justify-between gap-12 px-6 py-24 sm:px-10">
         <div className="max-w-2xl">
-          <h1 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-white opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.2s_forwards] sm:text-5xl md:text-6xl lg:text-7xl">
-            We are <GradientText className="inline">CloudWay</GradientText>.
+          {/* Eyebrow pill */}
+          <div
+            className="mb-6 inline-flex flex-nowrap items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-gray-300 opacity-0 backdrop-blur-md"
+            style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 0.1s forwards" }}
+          >
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-ping motion-reduce:animate-none" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+            </span>
+            <span>Available for new engagements</span>
+            <span className="text-white/30">·</span>
+            <span className="text-white/50">Q3 2026</span>
+          </div>
+
+          <h1
+            className="mb-6 text-5xl font-bold leading-[1.02] tracking-tight text-white opacity-0 sm:text-6xl md:text-7xl lg:text-[88px]"
+            style={{ animation: "fade-slide-up 0.9s var(--ease-spring) 0.3s forwards" }}
+          >
+            <span className="block">We are</span>
+            <span className="relative block">
+              <span
+                className="inline-block bg-clip-text text-transparent"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(90deg, #38bdf8 0%, #a855f7 35%, #ec4899 70%, #38bdf8 100%)",
+                  backgroundSize: "200% 100%",
+                  animation: "text-shimmer 6s linear infinite",
+                }}
+              >
+                CloudWay.
+              </span>
+              <span
+                aria-hidden
+                className="absolute -inset-x-4 -inset-y-2 -z-10 block opacity-60 blur-2xl"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(56,189,248,0.4) 0%, rgba(168,85,247,0.4) 50%, rgba(236,72,153,0.4) 100%)",
+                }}
+              />
+            </span>
           </h1>
-          <p className="mb-10 max-w-lg text-lg text-gray-400 opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.5s_forwards] sm:text-xl">
-            We build full-stack applications that help businesses
-            scale, streamline operations, and stand out online.
+
+          <p
+            className="mb-10 max-w-xl text-lg leading-relaxed text-gray-300/90 opacity-0 sm:text-xl"
+            style={{
+              animation: "fade-slide-up 0.8s var(--ease-spring) 0.6s forwards",
+              textWrap: "pretty",
+            }}
+          >
+            We build full-stack applications that help businesses scale, streamline operations, and
+            stand out online.
           </p>
-          <div className="opacity-0 animate-[fadeSlideUp_0.8s_ease-out_0.8s_forwards]">
+
+          <div
+            className="flex flex-wrap items-center gap-3 opacity-0"
+            style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 0.85s forwards" }}
+          >
             <StarButton href="/work">View Work</StarButton>
+            <StarButton href="/#contact" variant="ghost">
+              Start a project
+            </StarButton>
           </div>
         </div>
 
-        {/* Right: card carousel */}
-        <div className="hidden flex-col items-center gap-4 lg:flex">
+        {/* Right: carousel */}
+        <div className="hidden shrink-0 flex-col items-center gap-5 lg:flex">
           <div className="flex flex-col gap-4">
-            {visibleSlides.map((slide, i) =>
+            {visible.map((slide, i) =>
               slide.kind === "announcement" ? (
-                <div
-                  key={slide.announcement.id}
-                  className={`w-56 rounded-2xl border ${typeBorder[slide.announcement.type]} bg-white/5 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-white/10 animate-[fadeSlideLeft_0.4s_ease-out_forwards]`}
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                >
-                  <div className={`mb-2 flex items-center gap-2.5 ${typeAccent[slide.announcement.type]}`}>
-                    <MegaphoneIcon className="h-5 w-5" />
-                    <h3 className="text-sm font-semibold text-white">
-                      {slide.announcement.title}
-                    </h3>
-                  </div>
-                  <p className="text-xs leading-relaxed text-gray-400">
-                    {slide.announcement.body}
-                  </p>
-                </div>
+                <AnnouncementCard
+                  key={`${slide.data.id}-${page}`}
+                  a={slide.data}
+                  index={i}
+                />
               ) : (
-                <div
-                  key={slide.title}
-                  className="w-56 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-white/10 animate-[fadeSlideLeft_0.4s_ease-out_forwards]"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                >
-                  <div className="mb-2 flex items-center gap-2.5 text-purple-400">
-                    {slide.icon}
-                    <h3 className="text-sm font-semibold text-white">{slide.title}</h3>
-                  </div>
-                  <p className="text-xs leading-relaxed text-gray-400">
-                    {slide.description}
-                  </p>
-                </div>
+                <StatCardView
+                  key={`${slide.data.title}-${page}`}
+                  item={slide.data}
+                  index={i}
+                />
               ),
             )}
           </div>
 
-          {/* Carousel controls */}
           {totalPages > 1 && (
-            <div className="flex items-center gap-3 opacity-0 animate-[fadeSlideUp_0.6s_ease-out_1s_forwards]">
+            <div
+              className="flex items-center gap-3 opacity-0"
+              style={{ animation: "fade-slide-up 0.6s var(--ease-spring) 1.3s forwards" }}
+            >
               <button
                 onClick={prev}
-                className="rounded-full border border-white/10 bg-white/5 p-1.5 text-gray-400 backdrop-blur-md transition-colors hover:border-white/20 hover:text-white"
-                aria-label="Previous cards"
+                className="rounded-full border border-white/10 bg-white/5 p-1.5 text-gray-400 backdrop-blur-md transition-all hover:border-white/25 hover:bg-white/10 hover:text-white"
+                aria-label="Previous"
               >
                 <ChevronLeftIcon className="h-4 w-4" />
               </button>
-              <div className="flex gap-1.5">
+              <div className="flex items-center gap-1.5">
                 {Array.from({ length: totalPages }, (_, i) => (
                   <button
                     key={i}
                     onClick={() => setPage(i)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                    className={`h-1.5 rounded-full transition-all duration-500 ${
                       i === page
-                        ? "w-4 bg-white"
-                        : "w-1.5 bg-white/30 hover:bg-white/50"
+                        ? "w-6 bg-linear-to-r from-sky-400 to-purple-400"
+                        : "w-1.5 bg-white/25 hover:bg-white/50"
                     }`}
                     aria-label={`Page ${i + 1}`}
                   />
@@ -233,8 +298,8 @@ export function HeroSection({
               </div>
               <button
                 onClick={next}
-                className="rounded-full border border-white/10 bg-white/5 p-1.5 text-gray-400 backdrop-blur-md transition-colors hover:border-white/20 hover:text-white"
-                aria-label="Next cards"
+                className="rounded-full border border-white/10 bg-white/5 p-1.5 text-gray-400 backdrop-blur-md transition-all hover:border-white/25 hover:bg-white/10 hover:text-white"
+                aria-label="Next"
               >
                 <ChevronRightIcon className="h-4 w-4" />
               </button>
@@ -243,61 +308,67 @@ export function HeroSection({
         </div>
       </div>
 
-      {/* ── Ambient glow ── */}
-      <div className="pointer-events-none absolute left-1/4 top-1/3 z-[1] h-96 w-96 rounded-full bg-purple-600/10 blur-[120px] animate-[pulse_8s_ease-in-out_infinite]" aria-hidden />
-      <div className="pointer-events-none absolute right-1/4 bottom-1/4 z-[1] h-80 w-80 rounded-full bg-sky-500/10 blur-[100px] animate-[pulse_10s_ease-in-out_2s_infinite]" aria-hidden />
-
-      {/* ── Scroll indicator ── */}
+      {/* Scroll indicator */}
       <button
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 opacity-0 animate-[fadeSlideUp_0.6s_ease-out_1.4s_forwards]"
-        onClick={() =>
-          document.getElementById("content")?.scrollIntoView({ behavior: "smooth" })
-        }
+        onClick={() => {
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          document.getElementById("content")?.scrollIntoView({
+            behavior: reduceMotion ? "auto" : "smooth",
+          })
+        }}
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 opacity-0 motion-safe:animate-[fade-slide-up_0.8s_var(--ease-spring)_1.5s_forwards] motion-reduce:opacity-100"
         aria-label="Scroll to content"
       >
-        <span className="flex flex-col items-center gap-2 text-gray-400 transition-colors hover:text-white">
-          <span className="text-xs font-medium uppercase tracking-widest">Scroll</span>
-          <svg className="h-5 w-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
+        <span className="flex flex-col items-center gap-2.5 text-gray-400 transition-colors hover:text-white">
+          <span className="text-[10px] font-medium uppercase tracking-[0.3em]">Scroll</span>
+          <span className="relative flex h-10 w-6 items-start justify-center rounded-full border border-white/20 p-1.5">
+            <span
+              className="h-2 w-1 rounded-full bg-linear-to-b from-white to-purple-400 motion-safe:animate-[scroll-dot_2s_ease-in-out_infinite]"
+            />
+          </span>
         </span>
       </button>
 
-      {/* Social icons — bottom left */}
-      <div className="absolute bottom-8 left-6 z-10 flex items-center gap-4 opacity-0 animate-[fadeSlideUp_0.6s_ease-out_1.2s_forwards] sm:left-10">
-        <a
-          href="https://x.com/Whayyven"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-gray-500 transition-colors hover:text-white"
-          aria-label="Twitter"
-        >
-          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/wayne-foster-jr"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-gray-500 transition-colors hover:text-white"
-          aria-label="LinkedIn"
-        >
-          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-          </svg>
-        </a>
-        <a
-          href="https://github.com/Whayven"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-gray-500 transition-colors hover:text-white"
-          aria-label="GitHub"
-        >
-          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-            <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
-          </svg>
-        </a>
+      {/* Socials */}
+      <div
+        className="absolute bottom-8 left-6 z-10 flex items-center gap-4 opacity-0 sm:left-10"
+        style={{ animation: "fade-slide-up 0.8s var(--ease-spring) 1.4s forwards" }}
+      >
+        {[
+          {
+            label: "Twitter",
+            href: "https://x.com/Whayyven",
+            d: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z",
+          },
+          {
+            label: "LinkedIn",
+            href: "https://www.linkedin.com/in/wayne-foster-jr",
+            d: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
+          },
+          {
+            label: "GitHub",
+            href: "https://github.com/Whayven",
+            d: "M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z",
+          },
+        ].map((s) => (
+          <a
+            key={s.label}
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={s.label}
+            className="group relative text-gray-500 transition-colors hover:text-white"
+          >
+            <svg
+              className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-0.5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d={s.d} />
+            </svg>
+            <span className="absolute -inset-2 -z-10 rounded-full bg-purple-500/30 opacity-0 blur-sm transition-opacity duration-300 group-hover:opacity-100" />
+          </a>
+        ))}
       </div>
     </section>
   )

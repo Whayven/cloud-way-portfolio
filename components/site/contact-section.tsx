@@ -1,211 +1,203 @@
 "use client"
 
-import { useActionState, useRef } from "react"
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react"
-import { ChevronDownIcon } from "@heroicons/react/24/outline"
-import {
-  submitContactForm,
-  type ContactFormState,
-} from "@/app/actions/contact"
+import { useActionState, useEffect, useRef } from "react"
+import { FadeIn } from "@/components/site/animated-section"
+import { PageEyebrow } from "@/components/site/page-eyebrow"
+import { submitContactForm, type ContactFormState } from "@/app/actions/contact"
 
 const initial: ContactFormState = { success: false }
+
+const labelCls =
+  "block text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400"
+const inputCls =
+  "mt-2 block w-full rounded-xl border-0 bg-white/5 px-3.5 py-2.5 text-sm text-white shadow-sm ring-1 ring-white/15 transition placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500/60"
+
+const details = [
+  {
+    label: "Email",
+    value: "hello@cloud-way.dev",
+    href: "mailto:hello@cloud-way.dev",
+  },
+  {
+    label: "Response",
+    value: "Within one business day",
+  },
+  {
+    label: "Based",
+    value: "Remote-first · PST / EST hours",
+  },
+] as const
 
 export function ContactSection() {
   const [state, action, pending] = useActionState(submitContactForm, initial)
   const formRef = useRef<HTMLFormElement>(null)
 
-  if (state.success) {
-    formRef.current?.reset()
-  }
+  useEffect(() => {
+    if (state.success) formRef.current?.reset()
+  }, [state.success])
 
   return (
-    <section className="border-t border-white/10 py-20 sm:py-24">
-      <div className="mx-auto max-w-xl rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
-        <Disclosure>
-          {({ open }) => (
-            <>
-              <DisclosureButton className="flex w-full items-center justify-between px-8 py-8 sm:px-10 sm:py-10">
-                <div className="text-left">
-                  <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                    <span className="bg-linear-to-r from-white to-purple-400 bg-clip-text text-transparent">
-                      Contact Us
-                    </span>
-                  </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-gray-400">
-                    We&apos;d love to hear from you. Send a message and
-                    we&apos;ll get back to you as soon as possible.
+    <section id="contact" className="relative border-t border-white/10 py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl px-2">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr]">
+          <FadeIn>
+            <div>
+              <PageEyebrow>Start a project</PageEyebrow>
+              <h2
+                className="text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl"
+                style={{ textWrap: "balance" }}
+              >
+                Tell us what you&apos;re
+                <br />
+                building.
+              </h2>
+              <p className="mt-5 max-w-lg text-base leading-relaxed text-gray-400 sm:text-lg">
+                We read every message. Typical response within one business day.
+              </p>
+
+              <dl className="mt-10 space-y-5">
+                {details.map((row) => (
+                  <div
+                    key={row.label}
+                    className="flex items-start gap-4 border-b border-white/5 pb-5"
+                  >
+                    <dt className="w-24 shrink-0 text-[10px] font-medium uppercase tracking-[0.3em] text-white/40">
+                      {row.label}
+                    </dt>
+                    <dd className="text-base text-white">
+                      {"href" in row && row.href ? (
+                        <a className="hover:text-purple-300" href={row.href}>
+                          {row.value}
+                        </a>
+                      ) : (
+                        row.value
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </FadeIn>
+
+          <FadeIn index={1}>
+            <form
+              ref={formRef}
+              action={action}
+              className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl sm:p-10"
+            >
+              <div
+                className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full opacity-60 blur-3xl"
+                style={{ background: "radial-gradient(circle, rgba(168,85,247,0.4), transparent 70%)" }}
+              />
+              {state.success ? (
+                <div className="relative py-12 text-center">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-emerald-400/40 bg-emerald-500/10">
+                    <svg
+                      className="h-6 w-6 text-emerald-400"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 12.75l6 6 9-13.5"
+                      />
+                    </svg>
+                  </div>
+                  <p className="mt-5 text-lg font-semibold text-white">Message sent</p>
+                  <p className="mt-2 text-sm text-gray-400">
+                    Thanks for reaching out. We&apos;ll be in touch shortly.
                   </p>
                 </div>
-                <ChevronDownIcon
-                  className={`h-6 w-6 shrink-0 text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-                />
-              </DisclosureButton>
-
-              <DisclosurePanel
-                transition
-                className="origin-top transition duration-300 ease-out data-[closed]:-translate-y-2 data-[closed]:opacity-0"
-              >
-                {state.success ? (
-                  <div className="border-t border-white/10 px-8 py-12 text-center sm:px-10">
-                    <p className="text-lg font-semibold text-white">
-                      Message sent!
+              ) : (
+                <div className="relative grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  {state.error && (
+                    <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400 ring-1 ring-red-500/20 sm:col-span-2">
+                      {state.error}
                     </p>
-                    <p className="mt-2 text-sm text-gray-400">
-                      Thanks for reaching out. We&apos;ll get back to you soon.
-                    </p>
+                  )}
+                  <div>
+                    <label htmlFor="first-name" className={labelCls}>
+                      First name
+                    </label>
+                    <input
+                      id="first-name"
+                      name="first-name"
+                      type="text"
+                      required
+                      autoComplete="given-name"
+                      className={inputCls}
+                    />
                   </div>
-                ) : (
-                  <form
-                    ref={formRef}
-                    action={action}
-                    className="border-t border-white/10 px-8 pb-8 pt-8 sm:px-10 sm:pb-10"
-                  >
-                    {state.error && (
-                      <p className="mb-5 rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400 ring-1 ring-red-500/20">
-                        {state.error}
-                      </p>
-                    )}
-                    <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-                      <div>
-                        <label
-                          htmlFor="first-name"
-                          className="block text-xs font-semibold uppercase tracking-wide text-gray-400"
-                        >
-                          First name
-                        </label>
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            name="first-name"
-                            id="first-name"
-                            required
-                            autoComplete="given-name"
-                            className="block w-full rounded-xl border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-white/15 transition placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500/60 sm:text-sm"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="last-name"
-                          className="block text-xs font-semibold uppercase tracking-wide text-gray-400"
-                        >
-                          Last name
-                        </label>
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            name="last-name"
-                            id="last-name"
-                            required
-                            autoComplete="family-name"
-                            className="block w-full rounded-xl border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-white/15 transition placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500/60 sm:text-sm"
-                          />
-                        </div>
-                      </div>
-                      <div className="sm:col-span-2">
-                        <label
-                          htmlFor="company"
-                          className="block text-xs font-semibold uppercase tracking-wide text-gray-400"
-                        >
-                          Company
-                        </label>
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            name="company"
-                            id="company"
-                            autoComplete="organization"
-                            className="block w-full rounded-xl border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-white/15 transition placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500/60 sm:text-sm"
-                          />
-                        </div>
-                      </div>
-                      <div className="sm:col-span-2">
-                        <label
-                          htmlFor="email"
-                          className="block text-xs font-semibold uppercase tracking-wide text-gray-400"
-                        >
-                          Email
-                        </label>
-                        <div className="mt-2">
-                          <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            required
-                            autoComplete="email"
-                            className="block w-full rounded-xl border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-white/15 transition placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500/60 sm:text-sm"
-                          />
-                        </div>
-                      </div>
-                      <div className="sm:col-span-2">
-                        <label
-                          htmlFor="phone-number"
-                          className="block text-xs font-semibold uppercase tracking-wide text-gray-400"
-                        >
-                          Phone number
-                        </label>
-                        <div className="relative mt-2">
-                          <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <label htmlFor="country" className="sr-only">
-                              Country
-                            </label>
-                            <select
-                              id="country"
-                              name="country"
-                              className="h-full rounded-lg border-0 bg-transparent py-0 text-sm text-gray-400 focus:ring-0"
-                              defaultValue="US"
-                            >
-                              <option>US</option>
-                              <option>CA</option>
-                              <option>EU</option>
-                            </select>
-                          </div>
-                          <input
-                            type="tel"
-                            name="phone-number"
-                            id="phone-number"
-                            autoComplete="tel"
-                            className="block w-full rounded-xl border-0 bg-white/5 py-2.5 pl-24 pr-3.5 text-white shadow-sm ring-1 ring-white/15 transition focus:ring-2 focus:ring-purple-500/60 sm:text-sm"
-                          />
-                        </div>
-                      </div>
-                      <div className="sm:col-span-2">
-                        <label
-                          htmlFor="message"
-                          className="block text-xs font-semibold uppercase tracking-wide text-gray-400"
-                        >
-                          Message
-                        </label>
-                        <div className="mt-2">
-                          <textarea
-                            name="message"
-                            id="message"
-                            required
-                            rows={4}
-                            className="block w-full rounded-xl border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-white/15 transition placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500/60 sm:text-sm"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-10">
-                      <button
-                        type="submit"
-                        disabled={pending}
-                        className="w-full rounded-xl bg-linear-to-r from-purple-600 to-fuchsia-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50"
-                      >
-                        {pending ? "Sending\u2026" : "Let\u2019s talk"}
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </DisclosurePanel>
-            </>
-          )}
-        </Disclosure>
+                  <div>
+                    <label htmlFor="last-name" className={labelCls}>
+                      Last name
+                    </label>
+                    <input
+                      id="last-name"
+                      name="last-name"
+                      type="text"
+                      required
+                      autoComplete="family-name"
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="email" className={labelCls}>
+                      Work email
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="company" className={labelCls}>
+                      Company
+                    </label>
+                    <input
+                      id="company"
+                      name="company"
+                      type="text"
+                      autoComplete="organization"
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="message" className={labelCls}>
+                      What are you looking to build?
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      required
+                      rows={4}
+                      placeholder="A few sentences is plenty."
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="mt-2 sm:col-span-2">
+                    <button
+                      type="submit"
+                      disabled={pending}
+                      className="relative w-full overflow-hidden rounded-xl bg-linear-to-r from-purple-600 to-fuchsia-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 disabled:opacity-60"
+                    >
+                      <span className="relative z-10">
+                        {pending ? "Sending…" : "Let's talk →"}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </form>
+          </FadeIn>
+        </div>
       </div>
     </section>
   )

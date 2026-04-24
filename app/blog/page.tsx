@@ -1,20 +1,185 @@
 import Image from "next/image"
 import Link from "next/link"
+import { BlogNewsletter } from "@/components/site/blog-newsletter"
+import { FadeIn } from "@/components/site/animated-section"
+import { NebulaBackdrop } from "@/components/site/nebula-backdrop"
+import { PageEyebrow } from "@/components/site/page-eyebrow"
+import { SiteFooter } from "@/components/site/site-footer"
+import { SiteHeader } from "@/components/site/site-header"
 import { prisma } from "@/lib/db"
 import { ContentStatus } from "@/lib/generated/prisma/client"
 import { formatDate } from "@/lib/utils"
-import { SiteHeader } from "@/components/site/site-header"
-import { SiteFooter } from "@/components/site/site-footer"
-import { GradientText } from "@/components/site/gradient-text"
 
 export const metadata = {
-  title: "Blog | CloudWay",
-  description: "Insights on software development, AI, and cloud solutions.",
+  title: "Blog",
+  description: "Field notes from CloudWay — practical essays on software, cloud, and AI.",
+}
+
+const GRADIENTS = [
+  "radial-gradient(circle at 25% 25%, rgba(168,85,247,0.6), transparent 55%), radial-gradient(circle at 75% 75%, rgba(56,189,248,0.55), transparent 55%)",
+  "radial-gradient(circle at 50% 30%, rgba(236,72,153,0.55), transparent 55%), radial-gradient(circle at 50% 80%, rgba(99,102,241,0.55), transparent 55%)",
+  "radial-gradient(circle at 30% 70%, rgba(52,211,153,0.55), transparent 55%), radial-gradient(circle at 70% 20%, rgba(168,85,247,0.5), transparent 55%)",
+  "radial-gradient(circle at 70% 30%, rgba(56,189,248,0.55), transparent 55%), radial-gradient(circle at 30% 80%, rgba(236,72,153,0.5), transparent 55%)",
+  "radial-gradient(circle at 20% 60%, rgba(251,191,36,0.5), transparent 55%), radial-gradient(circle at 80% 40%, rgba(168,85,247,0.5), transparent 55%)",
+]
+
+function gradientFor(slug: string) {
+  let h = 0
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) | 0
+  return GRADIENTS[Math.abs(h) % GRADIENTS.length]
+}
+
+type PostSummary = {
+  slug: string
+  title: string
+  excerpt: string
+  coverImage: string | null
+  publishedAt: Date | null
+}
+
+function CoverArt({ post, priority = false }: { post: PostSummary; priority?: boolean }) {
+  return (
+    <div className="relative h-full w-full overflow-hidden">
+      {post.coverImage ? (
+        <Image
+          src={post.coverImage}
+          alt={post.title}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          priority={priority}
+          className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+        />
+      ) : (
+        <div
+          className="absolute inset-0 transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+          style={{ background: gradientFor(post.slug) }}
+        />
+      )}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: "radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+      <div className="absolute inset-0 bg-linear-to-t from-cw-dark/70 via-transparent to-transparent" />
+    </div>
+  )
+}
+
+function FeaturedPost({ post }: { post: PostSummary }) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group relative block overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition-all duration-500 hover:border-white/25"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr]">
+        <div className="relative aspect-[16/10] md:aspect-auto">
+          <CoverArt post={post} priority />
+        </div>
+        <div className="flex flex-col justify-center p-8 sm:p-10 md:p-12">
+          <div className="flex flex-wrap items-center gap-3 text-[10px] font-medium uppercase tracking-[0.3em] text-white/40">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-purple-500/15 px-2.5 py-1 text-purple-300">
+              ★ Featured
+            </span>
+            {post.publishedAt && (
+              <span className="whitespace-nowrap">{formatDate(post.publishedAt)}</span>
+            )}
+          </div>
+          <h2
+            className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl"
+            style={{ textWrap: "balance" }}
+          >
+            {post.title}
+          </h2>
+          <p
+            className="mt-4 text-base leading-relaxed text-gray-400"
+            style={{ textWrap: "pretty" }}
+          >
+            {post.excerpt}
+          </p>
+          <div className="mt-6 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span
+                className="h-8 w-8 rounded-full"
+                style={{ background: "linear-gradient(135deg, #a855f7, #ec4899)" }}
+              />
+              <div>
+                <p className="text-xs font-semibold text-white">CloudWay Studio</p>
+                <p className="text-[10px] text-gray-500">Field notes</p>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium text-purple-300 transition-colors group-hover:text-white">
+              Read article
+              <svg
+                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function PostCard({ post }: { post: PostSummary }) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition-all duration-500 hover:border-white/25"
+    >
+      <div className="relative aspect-[16/9]">
+        <CoverArt post={post} />
+      </div>
+      <div className="flex flex-1 flex-col p-6">
+        {post.publishedAt && (
+          <time className="text-[10px] font-medium uppercase tracking-[0.3em] text-white/40">
+            {formatDate(post.publishedAt)}
+          </time>
+        )}
+        <h3
+          className="mt-3 text-lg font-semibold leading-snug tracking-tight text-white transition-colors group-hover:text-purple-200"
+          style={{ textWrap: "balance" }}
+        >
+          {post.title}
+        </h3>
+        <p
+          className="mt-2 flex-1 text-sm leading-relaxed text-gray-400"
+          style={{ textWrap: "pretty" }}
+        >
+          {post.excerpt}
+        </p>
+        <span className="mt-5 inline-flex items-center gap-1 whitespace-nowrap text-xs font-medium text-purple-300 opacity-0 transition-opacity group-hover:opacity-100">
+          Read
+          <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+            />
+          </svg>
+        </span>
+      </div>
+    </Link>
+  )
 }
 
 export default async function BlogPage() {
   const posts = await prisma.blogPost.findMany({
-    where: { status: ContentStatus.published },
+    where: {
+      status: ContentStatus.published,
+      publishedAt: { not: null },
+    },
     orderBy: { publishedAt: "desc" },
     select: {
       slug: true,
@@ -28,139 +193,84 @@ export default async function BlogPage() {
   const [featured, ...rest] = posts
 
   return (
-    <div className="min-h-screen bg-cw-dark">
-      <SiteHeader />
+    <div className="relative min-h-screen bg-cw-dark text-white">
+      <NebulaBackdrop opacity={0.35} interactive={false} />
+      <div className="relative z-10">
+        <SiteHeader />
 
-      <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-20 sm:px-8 lg:px-10">
-        {/* Page header */}
-        <div className="mb-16">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            <GradientText subtle>Blog</GradientText>
-          </h1>
-          <div className="mt-4 flex items-center gap-4">
-            <div className="h-px flex-1 bg-linear-to-r from-purple-400/40 to-transparent" />
-          </div>
-          <p className="mt-4 max-w-lg text-base leading-relaxed text-gray-400">
-            Thoughts on software development, cloud architecture, and the tools
-            we use to build modern web experiences.
-          </p>
-        </div>
-
-        {posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32">
-            <div className="h-px w-16 bg-purple-400/30" />
-            <p className="mt-6 text-gray-500">No posts yet. Check back soon.</p>
-          </div>
-        ) : (
-          <div className="space-y-16">
-            {/* Featured post — full width with cover */}
-            {featured && (
-              <article>
-                <Link
-                  href={`/blog/${featured.slug}`}
-                  className="group block"
+        <main className="relative mx-auto w-full max-w-[85rem] px-6 sm:px-10">
+          <section className="py-20 sm:py-28">
+            <FadeIn>
+              <PageEyebrow>Field notes</PageEyebrow>
+            </FadeIn>
+            <FadeIn index={1}>
+              <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+                <h1
+                  className="max-w-3xl text-5xl font-semibold leading-[1.03] tracking-tight text-white sm:text-6xl md:text-7xl"
+                  style={{ textWrap: "balance" }}
                 >
-                  {/* Image hero — hidden on mobile, shown sm+ */}
-                  {featured.coverImage && (
-                    <div className="relative hidden overflow-hidden rounded-2xl border border-white/10 sm:block sm:aspect-[2.2/1]">
-                      <Image
-                        src={featured.coverImage}
-                        alt={featured.title}
-                        fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        sizes="960px"
-                        priority
-                      />
-                      <div className="absolute inset-0 bg-linear-to-t from-cw-dark via-cw-dark/40 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-10">
-                        {featured.publishedAt && (
-                          <time className="text-xs font-medium uppercase tracking-widest text-gray-400">
-                            {formatDate(featured.publishedAt)}
-                          </time>
-                        )}
-                        <h2 className="mt-2 text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-purple-300 sm:text-3xl">
-                          {featured.title}
-                        </h2>
-                        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-gray-300">
-                          {featured.excerpt}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {/* Plain card — shown on mobile (always if no image, mobile-only if image) */}
-                  <div className={`rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors duration-300 group-hover:border-purple-400/20 group-hover:bg-white/[0.06] sm:p-10 ${featured.coverImage ? "sm:hidden" : ""}`}>
-                    {featured.publishedAt && (
-                      <time className="text-xs font-medium uppercase tracking-widest text-gray-500">
-                        {formatDate(featured.publishedAt)}
-                      </time>
-                    )}
-                    <h2 className="mt-3 text-2xl font-bold tracking-tight text-white transition-colors group-hover:text-purple-300 sm:text-3xl">
-                      {featured.title}
-                    </h2>
-                    <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-400">
-                      {featured.excerpt}
-                    </p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-purple-400 transition-colors group-hover:text-purple-300">
-                      Read article
-                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                    </span>
-                  </div>
-                </Link>
-              </article>
-            )}
-
-            {/* Remaining posts — clean list */}
-            {rest.length > 0 && (
-              <div>
-                <div className="mb-8 flex items-center gap-4">
-                  <span className="text-xs font-medium uppercase tracking-widest text-gray-500">
-                    More articles
-                  </span>
-                  <div className="h-px flex-1 bg-white/10" />
-                </div>
-                <div className="grid gap-6 sm:grid-cols-2">
-                  {rest.map((post) => (
-                    <article key={post.slug}>
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="group flex h-full flex-col rounded-xl border border-white/[0.07] bg-white/[0.02] p-6 transition-all duration-300 hover:border-purple-400/20 hover:bg-white/[0.05]"
-                      >
-                        {post.coverImage && (
-                          <div className="relative -mx-6 -mt-6 mb-5 hidden aspect-[2/1] overflow-hidden rounded-t-xl sm:block">
-                            <Image
-                              src={post.coverImage}
-                              alt={post.title}
-                              fill
-                              className="object-cover transition-transform duration-500 group-hover:scale-105"
-                              sizes="480px"
-                            />
-                          </div>
-                        )}
-                        {post.publishedAt && (
-                          <time className="text-xs font-medium uppercase tracking-widest text-gray-500">
-                            {formatDate(post.publishedAt)}
-                          </time>
-                        )}
-                        <h2 className="mt-2 text-lg font-semibold leading-snug text-white transition-colors group-hover:text-purple-300">
-                          {post.title}
-                        </h2>
-                        <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-400">
-                          {post.excerpt}
-                        </p>
-                        <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-purple-400 transition-colors group-hover:text-purple-300">
-                          Read
-                          <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                        </span>
-                      </Link>
-                    </article>
-                  ))}
-                </div>
+                  Notes from the{" "}
+                  <span
+                    className="inline-block bg-clip-text text-transparent"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(90deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%)",
+                    }}
+                  >
+                    working
+                  </span>{" "}
+                  studio.
+                </h1>
+                <p
+                  className="max-w-sm text-base leading-relaxed text-gray-400"
+                  style={{ textWrap: "pretty" }}
+                >
+                  Practical essays on software, cloud, AI, and the tools we actually use. Short.
+                  Opinionated.
+                </p>
               </div>
-            )}
-          </div>
-        )}
-      </main>
-      <SiteFooter />
+            </FadeIn>
+          </section>
+
+          {posts.length === 0 ? (
+            <section className="pb-24">
+              <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-16 text-center">
+                <p className="text-gray-400">No posts yet. Check back soon.</p>
+              </div>
+            </section>
+          ) : (
+            <>
+              {featured && (
+                <section className="pb-10">
+                  <FadeIn>
+                    <FeaturedPost post={featured} />
+                  </FadeIn>
+                </section>
+              )}
+
+              {rest.length > 0 && (
+                <section className="pb-24">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {rest.map((post, i) => (
+                      <FadeIn key={post.slug} index={i + 1}>
+                        <PostCard post={post} />
+                      </FadeIn>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </>
+          )}
+
+          <section className="pb-24">
+            <FadeIn>
+              <BlogNewsletter />
+            </FadeIn>
+          </section>
+        </main>
+
+        <SiteFooter />
+      </div>
     </div>
   )
 }

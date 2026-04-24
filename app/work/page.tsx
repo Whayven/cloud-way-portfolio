@@ -1,15 +1,23 @@
-import Image from "next/image"
-import Link from "next/link"
-import { prisma } from "@/lib/db"
-import { GradientText } from "@/components/site/gradient-text"
-import { SiteHeader } from "@/components/site/site-header"
+import { FadeIn } from "@/components/site/animated-section"
+import { NebulaBackdrop } from "@/components/site/nebula-backdrop"
+import { PageEyebrow } from "@/components/site/page-eyebrow"
 import { SiteFooter } from "@/components/site/site-footer"
-import { NebulaBackground } from "@/components/site/nebula-background"
+import { SiteHeader } from "@/components/site/site-header"
+import { StarButton } from "@/components/ui/star-button"
+import { WorkFilter } from "@/components/site/work-filter"
+import { prisma } from "@/lib/db"
 
 export const metadata = {
   title: "Work",
   description: "Explore our portfolio of projects and case studies.",
 }
+
+const STATS = [
+  { n: "40+", l: "Teams shipped with" },
+  { n: "12", l: "Industries served" },
+  { n: "5 yrs", l: "Avg. client tenure" },
+  { n: "4.9", l: "Project retro score" },
+]
 
 export default async function WorkPage() {
   const items = await prisma.portfolioItem.findMany({
@@ -17,77 +25,94 @@ export default async function WorkPage() {
     orderBy: { sortOrder: "asc" },
   })
 
-  return (
-    <div className="relative min-h-screen bg-cw-dark">
-      <NebulaBackground />
+  const gridItems = items.map((item) => ({
+    slug: item.slug,
+    title: item.title,
+    summary: item.summary,
+    imageUrl: item.imageUrl,
+    techStack: item.techStack,
+  }))
 
-      {/* Scrolling content */}
+  return (
+    <div className="relative min-h-screen bg-cw-dark text-white">
+      <NebulaBackdrop opacity={0.35} interactive={false} />
       <div className="relative z-10">
         <SiteHeader />
 
-        <main className="mx-auto w-full max-w-6xl px-6 pb-24 pt-32 sm:px-8 lg:px-10">
-          <div className="mb-16 text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              <GradientText subtle>Our Work</GradientText>
-            </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">
-              A selection of projects we&apos;ve built for clients and ourselves.
-            </p>
-          </div>
-
-          {items.length === 0 ? (
-            <p className="text-center text-gray-500">No projects yet.</p>
-          ) : (
-            <div className="flex flex-col gap-8">
-              {items.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/work/${item.slug}`}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl transition duration-300 hover:border-accent-sky-light/30 hover:bg-white/10 md:flex-row"
+        <main className="relative mx-auto w-full max-w-[85rem] px-6 sm:px-10">
+          <section className="relative py-20 sm:py-28">
+            <FadeIn>
+              <PageEyebrow>Selected work</PageEyebrow>
+            </FadeIn>
+            <FadeIn index={1}>
+              <h1
+                className="max-w-4xl text-5xl font-semibold leading-[1.03] tracking-tight text-white sm:text-6xl md:text-7xl"
+                style={{ textWrap: "balance" }}
+              >
+                Products that did the{" "}
+                <span
+                  className="inline-block bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(90deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%)",
+                  }}
                 >
-                  <div className="relative flex min-h-44 shrink-0 items-center justify-center overflow-hidden bg-white/5 md:w-64">
-                    {item.imageUrl ? (
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 256px"
-                      />
-                    ) : (
-                      <span className="px-8 text-center text-xl font-bold tracking-tight text-white/95">
-                        {item.title}
-                      </span>
-                    )}
+                  thing they were built
+                </span>{" "}
+                to do.
+              </h1>
+            </FadeIn>
+            <FadeIn index={2}>
+              <p
+                className="mt-6 max-w-xl text-base leading-relaxed text-gray-400 sm:text-lg"
+                style={{ textWrap: "pretty" }}
+              >
+                A selection of engagements from the last few years. Quiet craft, measurable outcomes.
+              </p>
+            </FadeIn>
+
+            <FadeIn index={3}>
+              <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {STATS.map((s) => (
+                  <div
+                    key={s.l}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl"
+                  >
+                    <p className="text-3xl font-semibold tracking-tight text-white">{s.n}</p>
+                    <p className="mt-1 text-xs text-gray-400">{s.l}</p>
                   </div>
-                  <div className="flex min-w-0 flex-1 flex-col justify-center p-6 md:p-8">
-                    <h2 className="text-xl font-semibold text-white">
-                      <GradientText subtle>{item.title}</GradientText>
+                ))}
+              </div>
+            </FadeIn>
+          </section>
+
+          <WorkFilter items={gridItems} />
+
+          <section className="pb-24 pt-16">
+            <FadeIn>
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-12 sm:p-16">
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 20% 20%, rgba(168,85,247,0.2), transparent 50%), radial-gradient(circle at 80% 80%, rgba(56,189,248,0.18), transparent 50%)",
+                  }}
+                />
+                <div className="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+                  <div>
+                    <PageEyebrow>Have a project?</PageEyebrow>
+                    <h2
+                      className="text-3xl font-semibold tracking-tight text-white sm:text-4xl"
+                      style={{ textWrap: "balance" }}
+                    >
+                      Let&apos;s make the next one.
                     </h2>
-                    <p className="mt-2 text-sm text-gray-400">
-                      {item.summary}
-                    </p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {item.techStack.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-md bg-purple-600/80 px-2.5 py-1 text-xs font-semibold text-white"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-gray-400 transition-colors group-hover:text-white">
-                      View details
-                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-1" aria-hidden>
-                        &rarr;
-                      </span>
-                    </span>
                   </div>
-                </Link>
-              ))}
-            </div>
-          )}
+                  <StarButton href="/#contact">Start a project</StarButton>
+                </div>
+              </div>
+            </FadeIn>
+          </section>
         </main>
 
         <SiteFooter />
