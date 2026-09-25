@@ -12,9 +12,11 @@ export function FaqAccordion({ items }: { items: { q: string; a: string }[] }) {
       {items.map((f, i) => {
         const isOpen = open === i
         const panelId = `${baseId}-panel-${i}`
+        const buttonId = `${baseId}-button-${i}`
         return (
           <li key={f.q} className="border-b border-white/10">
             <button
+              id={buttonId}
               type="button"
               onClick={() => setOpen(isOpen ? -1 : i)}
               aria-expanded={isOpen}
@@ -41,6 +43,10 @@ export function FaqAccordion({ items }: { items: { q: string; a: string }[] }) {
             <div
               id={panelId}
               role="region"
+              aria-labelledby={buttonId}
+              // Collapsed answers are only visually hidden; inert keeps them out of
+              // the accessibility tree and tab order.
+              inert={!isOpen}
               className="grid transition-[grid-template-rows,opacity] duration-500 ease-(--ease-spring)"
               style={{ gridTemplateRows: isOpen ? "1fr" : "0fr", opacity: isOpen ? 1 : 0 }}
             >

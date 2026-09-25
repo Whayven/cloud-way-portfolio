@@ -189,7 +189,9 @@ export function SiteHeader({ intro = false }: { intro?: boolean }) {
       {/* Mobile panel */}
       <div
         id="mobile-nav"
-        className={`overflow-hidden border-t border-white/10 bg-cw-dark/85 backdrop-blur-md transition-[max-height,opacity] duration-300 ease-out md:hidden ${
+        // Overlays the page (out of flow) so opening/closing it never shifts the
+        // document — otherwise a section link would land off by the panel height.
+        className={`absolute inset-x-0 top-full overflow-hidden border-t border-white/10 bg-cw-dark/95 backdrop-blur-md transition-[max-height,opacity] duration-300 ease-out md:hidden ${
           open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >

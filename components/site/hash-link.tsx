@@ -26,6 +26,13 @@ export function HashLink({ href, onClick, ...props }: ComponentProps<typeof Link
         e.preventDefault()
         const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches
         target.scrollIntoView({ behavior: smooth ? "smooth" : "auto" })
+        // Native fragment navigation would move the focus start point to the
+        // target; do the same so keyboard users continue from the section.
+        if (!target.hasAttribute("tabindex")) {
+          target.setAttribute("tabindex", "-1")
+          target.style.outline = "none"
+        }
+        target.focus({ preventScroll: true })
         if (window.location.hash !== `#${id}`) window.history.pushState(null, "", `#${id}`)
       }}
     />

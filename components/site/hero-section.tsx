@@ -36,14 +36,14 @@ function OrbitRings() {
       className="pointer-events-none absolute left-1/2 top-1/2 h-0 w-0 -rotate-[14deg] [perspective:1400px]"
       style={{ animation: `orbit-in 2.4s var(--ease-spring) ${at(0)} both` }}
     >
-      <div className="absolute -left-[380px] -top-[380px] h-[760px] w-[760px] rounded-full border border-white/[0.09] [animation:orbit_40s_linear_infinite]">
+      <div className="absolute -left-[380px] -top-[380px] h-[760px] w-[760px] rounded-full border border-white/[0.09] [transform:rotateX(74deg)] [animation:orbit_40s_linear_infinite]">
         <span className="absolute -top-1 left-1/2 -ml-1 h-2 w-2 rounded-full bg-sky-300 shadow-[0_0_12px_#38bdf8,0_0_30px_rgba(56,189,248,0.6)]" />
       </div>
-      <div className="absolute -left-[560px] -top-[560px] h-[1120px] w-[1120px] rounded-full border border-white/[0.06] [animation:orbit_70s_linear_infinite_reverse]">
+      <div className="absolute -left-[560px] -top-[560px] h-[1120px] w-[1120px] rounded-full border border-white/[0.06] [transform:rotateX(74deg)] [animation:orbit_70s_linear_infinite_reverse]">
         <span className="absolute -bottom-[5px] left-1/2 -ml-[5px] h-2.5 w-2.5 rounded-full bg-purple-300 shadow-[0_0_14px_#a855f7,0_0_40px_rgba(168,85,247,0.6)]" />
         <span className="absolute -right-[3px] top-1/2 -mt-[3px] h-[5px] w-[5px] rounded-full bg-white shadow-[0_0_10px_#fff]" />
       </div>
-      <div className="absolute -left-[760px] -top-[760px] h-[1520px] w-[1520px] rounded-full border border-dashed border-white/5 [animation:orbit_110s_linear_infinite]">
+      <div className="absolute -left-[760px] -top-[760px] h-[1520px] w-[1520px] rounded-full border border-dashed border-white/5 [transform:rotateX(74deg)] [animation:orbit_110s_linear_infinite]">
         <span className="absolute -left-1 top-1/2 -mt-1 h-[7px] w-[7px] rounded-full bg-fuchsia-300 shadow-[0_0_12px_#ec4899,0_0_34px_rgba(236,72,153,0.6)]" />
       </div>
     </div>
@@ -65,8 +65,6 @@ export function HeroSection() {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
           <span>Available for new engagements</span>
-          <span className="text-white/30">·</span>
-          <span className="text-white/50">Q3 2026</span>
         </div>
 
         <h1

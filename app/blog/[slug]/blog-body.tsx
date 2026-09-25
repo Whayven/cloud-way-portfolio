@@ -26,19 +26,30 @@ function codeLabel(pre: { children?: unknown[] } | undefined): string {
   return title || lang || "code"
 }
 
-const components: Components = {
-  h2: ({ children }) => {
-    const id = slugify(textOf(children))
+/**
+ * H2 renderer that gives every heading a unique, text-derived id: repeats get
+ * `-1`, `-2`… suffixes and empty headings fall back to `section`. Create one
+ * per render so the counts start fresh for each article.
+ */
+function makeH2(): Components["h2"] {
+  const seen = new Map<string, number>()
+  return function H2({ children }) {
+    const base = slugify(textOf(children)) || "section"
+    const n = seen.get(base) ?? 0
+    seen.set(base, n + 1)
     return (
       <h2
-        id={id}
+        id={n ? `${base}-${n}` : base}
         data-h2
         className="mt-16 scroll-mt-28 text-[30px] font-semibold leading-tight tracking-[-0.03em] text-white"
       >
         {children}
       </h2>
     )
-  },
+  }
+}
+
+const components: Components = {
   h3: ({ children }) => (
     <h3 className="mt-10 text-[22px] font-semibold tracking-[-0.02em] text-white">{children}</h3>
   ),
@@ -103,7 +114,7 @@ const components: Components = {
 export function BlogBody({ content }: { content: string }) {
   return (
     <div className="[&>:first-child]:mt-0 [&_img]:mt-8 [&_img]:rounded-xl">
-      <ReactMarkdown components={components}>{content}</ReactMarkdown>
+      <ReactMarkdown components={{ ...components, h2: makeH2() }}>{content}</ReactMarkdown>
     </div>
   )
 }
