@@ -1,94 +1,120 @@
-"use client"
-
-import { Children, isValidElement, type ComponentPropsWithoutRef } from "react"
+import { Children, isValidElement, type ReactNode } from "react"
 import ReactMarkdown, { type Components } from "react-markdown"
 import { slugify } from "@/lib/utils"
 
-function nodeText(children: React.ReactNode): string {
-  let out = ""
-  Children.forEach(children, (child) => {
-    if (typeof child === "string" || typeof child === "number") {
-      out += String(child)
-    } else if (isValidElement<{ children?: React.ReactNode }>(child)) {
-      out += nodeText(child.props.children)
-    }
-  })
-  return out
+function textOf(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node)
+  if (isValidElement<{ children?: ReactNode }>(node)) return textOf(node.props.children)
+  return Children.toArray(node).map(textOf).join("")
+}
+
+type HastCode = {
+  properties?: { className?: unknown }
+  data?: { meta?: string | null }
+}
+
+/** Label for a fenced block's window chrome: `title="…"`, a bare filename, or the language. */
+function codeLabel(pre: { children?: unknown[] } | undefined): string {
+  const code = pre?.children?.[0] as HastCode | undefined
+  const meta = code?.data?.meta?.trim()
+  const title = meta?.match(/title="([^"]+)"/)?.[1] ?? meta?.split(/\s+/)[0]
+  const classes = Array.isArray(code?.properties?.className) ? code.properties.className : []
+  const lang = classes
+    .map(String)
+    .find((c) => c.startsWith("language-"))
+    ?.slice("language-".length)
+  return title || lang || "code"
 }
 
 /**
- * Custom `h2` renderer that slugifies the heading text so it matches the
- * TOC entry ids produced by `extractH2Headings`. Duplicate headings are
- * disambiguated in the same order as the TOC helper.
+ * H2 renderer that gives every heading a unique, text-derived id: repeats get
+ * `-1`, `-2`… suffixes and empty headings fall back to `section`. Create one
+ * per render so the counts start fresh for each article.
  */
-function makeH2Renderer() {
-  const taken = new Set<string>()
-  return function H2({ children, ...rest }: ComponentPropsWithoutRef<"h2">) {
-    const label = nodeText(children)
-    const base = slugify(label) || "section"
-    let id = base
-    let n = 2
-    while (taken.has(id)) id = `${base}-${n++}`
-    taken.add(id)
+function makeH2(): Components["h2"] {
+  const seen = new Map<string, number>()
+  return function H2({ children }) {
+    const base = slugify(textOf(children)) || "section"
+    const n = seen.get(base) ?? 0
+    seen.set(base, n + 1)
     return (
-      <h2 id={id} className="scroll-mt-28" {...rest}>
+      <h2
+        id={n ? `${base}-${n}` : base}
+        data-h2
+        className="mt-16 scroll-mt-28 text-[30px] font-semibold leading-tight tracking-[-0.03em] text-white"
+      >
         {children}
       </h2>
     )
   }
 }
 
-function Pre({ children }: ComponentPropsWithoutRef<"pre">) {
-  // Window-chrome wrapper around fenced code blocks for the design's look.
-  return (
-    <div className="my-8 overflow-hidden rounded-2xl border border-white/10 bg-cw-dark not-prose">
+const components: Components = {
+  h3: ({ children }) => (
+    <h3 className="mt-10 text-[22px] font-semibold tracking-[-0.02em] text-white">{children}</h3>
+  ),
+  p: ({ children }) => (
+    <p className="mt-6 text-[17px] leading-[1.75] text-gray-300" style={{ textWrap: "pretty" }}>
+      {children}
+    </p>
+  ),
+  ul: ({ children }) => (
+    <ul className="mt-6 list-disc space-y-2 pl-6 text-[17px] leading-[1.75] text-gray-300 marker:text-purple-400 [&_p]:mt-0">
+      {children}
+    </ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="mt-6 list-decimal space-y-2 pl-6 text-[17px] leading-[1.75] text-gray-300 marker:text-purple-400 [&_p]:mt-0">
+      {children}
+    </ol>
+  ),
+  a: ({ href, children }) => {
+    const external = href ? /^https?:\/\//.test(href) : false
+    return (
+      <a
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
+        className="text-sky-400 underline-offset-4 hover:underline"
+      >
+        {children}
+      </a>
+    )
+  },
+  strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+  em: ({ children }) => <em className="text-gray-200">{children}</em>,
+  blockquote: ({ children }) => (
+    <blockquote className="relative mt-10 border-l-2 border-purple-400/60 py-1 pl-6 text-[22px] font-medium leading-[1.4] tracking-[-0.015em] text-white [&_p]:mt-0 [&_p]:text-[22px] [&_p]:leading-[1.4] [&_p]:text-white">
+      {children}
+    </blockquote>
+  ),
+  hr: () => <hr className="my-12 border-white/10" />,
+  code: ({ children }) => (
+    <code className="rounded-md bg-white/10 px-1.5 py-0.5 font-mono text-[0.875em] text-sky-300 [overflow-wrap:anywhere]">
+      {children}
+    </code>
+  ),
+  pre: ({ node, children }) => (
+    <div className="mt-8 overflow-hidden rounded-[18px] border border-white/10 bg-cw-dark shadow-[0_30px_60px_-30px_rgba(168,85,247,0.35)]">
       <div className="flex items-center justify-between border-b border-white/5 px-4 py-2.5">
-        <div className="flex items-center gap-1.5">
+        <div className="flex gap-1.5" aria-hidden>
           <span className="h-2 w-2 rounded-full bg-red-400/60" />
           <span className="h-2 w-2 rounded-full bg-yellow-400/60" />
           <span className="h-2 w-2 rounded-full bg-green-400/60" />
         </div>
+        <span className="font-mono text-[11px] text-white/35">{codeLabel(node)}</span>
       </div>
-      <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-white/85">
+      <pre className="m-0 overflow-x-auto p-5 font-mono text-[13px] leading-[1.7] text-white/85 [&_code]:rounded-none [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-[length:inherit] [&_code]:text-inherit">
         {children}
       </pre>
     </div>
-  )
+  ),
 }
 
 export function BlogBody({ content }: { content: string }) {
-  const components: Components = {
-    h2: makeH2Renderer(),
-    pre: Pre,
-  }
   return (
-    <div
-      className={[
-        "blog-md prose prose-invert prose-lg max-w-none",
-        // Headings
-        "prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-white",
-        "prose-h2:mt-16 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-8 prose-h3:text-xl",
-        // Paragraphs & lists
-        "prose-p:text-[17px] prose-p:leading-[1.75] prose-p:text-gray-300",
-        "prose-li:text-gray-300 prose-li:marker:text-purple-400",
-        // Links
-        "prose-a:text-sky-400 prose-a:no-underline hover:prose-a:underline",
-        // Bold & emphasis
-        "prose-strong:text-white prose-em:text-gray-200",
-        // Inline `code` only — see globals.css `.blog-md` (prose-code:* also hits pre>code otherwise)
-        "prose-code:text-sky-300 prose-code:text-sm prose-code:font-normal prose-code:before:content-none prose-code:after:content-none",
-        // Fenced blocks handled by the custom <Pre /> above; the prose-pre overrides just
-        // keep residual prose styling from clobbering our window chrome.
-        "prose-pre:bg-transparent prose-pre:border-0 prose-pre:p-0",
-        // Blockquotes → pull quote feel
-        "prose-blockquote:border-l-2 prose-blockquote:border-purple-400/60 prose-blockquote:pl-6 prose-blockquote:text-xl prose-blockquote:font-medium prose-blockquote:leading-snug prose-blockquote:text-white prose-blockquote:not-italic",
-        // Horizontal rules
-        "prose-hr:border-white/10",
-        // Images
-        "prose-img:rounded-xl",
-      ].join(" ")}
-    >
-      <ReactMarkdown components={components}>{content}</ReactMarkdown>
+    <div className="[&>:first-child]:mt-0 [&_img]:mt-8 [&_img]:rounded-xl">
+      <ReactMarkdown components={{ ...components, h2: makeH2() }}>{content}</ReactMarkdown>
     </div>
   )
 }

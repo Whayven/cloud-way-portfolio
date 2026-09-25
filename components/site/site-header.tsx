@@ -1,36 +1,82 @@
 "use client"
 
 import Link from "next/link"
+import { HashLink } from "@/components/site/hash-link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
+// Order matches the order of sections on the home page.
 const nav = [
   { href: "/", label: "Home" },
+  { href: "/#services", label: "Services" },
   { href: "/work", label: "Work" },
   { href: "/blog", label: "Blog" },
 ] as const
 
-function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/"
+// Sections that have their own nav item, as [path, element id].
+const sectionLinks = nav.flatMap((item) => {
+  const [path, id] = item.href.split("#")
+  return id ? [[path, id] as const] : []
+})
+
+/** `section` is the id of the nav-linked section currently in view, if any. */
+function isActive(pathname: string, href: string, section: string | null) {
+  const [path, id] = href.split("#")
+  if (id) return pathname === path && section === id
+  if (href === "/") return pathname === "/" && section === null
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
-export function SiteHeader() {
+function PingDot({ size }: { size: string }) {
+  return (
+    <span className={`relative inline-flex ${size}`}>
+      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-[ping_1.4s_cubic-bezier(0,0,0.2,1)_infinite]" />
+      <span className={`relative inline-flex rounded-full bg-emerald-400 ${size}`} />
+    </span>
+  )
+}
+
+export function SiteHeader({ intro = false }: { intro?: boolean }) {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [section, setSection] = useState<string | null>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
+  // Articles get a slightly heavier bar — it doubles as reading progress.
+  const isArticle = /^\/blog\/[^/]+/.test(pathname)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30)
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 30)
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      if (progressRef.current) {
+        progressRef.current.style.width = `${max > 0 ? Math.min(1, y / max) * 100 : 0}%`
+      }
+      // Scroll-spy: a section counts as current while it spans a line 35% down the viewport.
+      const line = window.innerHeight * 0.35
+      let current: string | null = null
+      for (const [path, id] of sectionLinks) {
+        const r = path === pathname ? document.getElementById(id)?.getBoundingClientRect() : undefined
+        if (r && r.top <= line && r.bottom > line) current = id
+      }
+      setSection(current)
+    }
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+    window.addEventListener("resize", onScroll)
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [pathname])
 
   // Close the mobile panel when the route changes.
-  useEffect(() => {
+  const [openedOn, setOpenedOn] = useState(pathname)
+  if (openedOn !== pathname) {
+    setOpenedOn(pathname)
     setOpen(false)
-  }, [pathname])
+  }
 
   // Close on Escape and lock body scroll while open.
   useEffect(() => {
@@ -49,15 +95,17 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+      className={`sticky top-0 z-50 w-full border-b transition-[background-color,border-color] duration-500 ${
         scrolled || open
-          ? "border-b border-white/10 bg-cw-dark/80 backdrop-blur-md"
-          : "border-b border-transparent"
+          ? "border-white/[0.08] bg-cw-dark/[0.72] backdrop-blur-[14px]"
+          : "border-transparent"
       }`}
     >
       <nav
-        className="mx-auto flex w-full max-w-[85rem] items-center justify-between gap-4 px-6 py-4 sm:py-5 sm:px-10"
+        className="mx-auto flex w-full max-w-[85rem] items-center justify-between gap-4 px-6 py-4 sm:px-10 sm:py-5"
         aria-label="Global"
+        // On the home page the nav fades in once the warp intro settles.
+        style={intro ? { animation: "fade-up .9s var(--ease-spring) calc(var(--intro) + 0.2s) both" } : undefined}
       >
         <Link
           href="/"
@@ -92,35 +140,32 @@ export function SiteHeader() {
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden items-center gap-1 md:flex md:gap-2">
+        <ul className="hidden items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1 backdrop-blur-md md:flex">
           {nav.map((item) => {
-            const active = isActive(pathname, item.href)
+            const active = isActive(pathname, item.href, section)
             return (
               <li key={item.href}>
-                <Link
+                <HashLink
                   href={item.href}
-                  className={`relative rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    active ? "text-white" : "text-gray-300 hover:text-white"
+                  className={`block rounded-full px-4 py-[7px] text-[13px] font-medium transition-all duration-300 ${
+                    active ? "bg-white/[0.08] text-white" : "text-gray-300 hover:text-white"
                   }`}
-                  aria-current={active ? "page" : undefined}
+                  aria-current={active ? (item.href.includes("#") ? "location" : "page") : undefined}
                 >
                   {item.label}
-                  {active && (
-                    <span className="absolute bottom-1 left-1/2 h-px w-[60%] -translate-x-1/2 bg-linear-to-r from-transparent via-purple-400 to-transparent" />
-                  )}
-                </Link>
+                </HashLink>
               </li>
             )
           })}
-          <li className="ml-2">
-            <Link
-              href="/#contact"
-              className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10"
-            >
-              Contact
-            </Link>
-          </li>
         </ul>
+
+        <HashLink
+          href="/#contact"
+          className="hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 px-[18px] py-2 text-[13px] font-medium text-white transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/[0.12] hover:shadow-[0_0_24px_rgba(168,85,247,0.35)] md:inline-flex"
+        >
+          <PingDot size="h-1.5 w-1.5" />
+          Contact
+        </HashLink>
 
         {/* Mobile menu toggle */}
         <button
@@ -144,16 +189,18 @@ export function SiteHeader() {
       {/* Mobile panel */}
       <div
         id="mobile-nav"
-        className={`overflow-hidden border-t border-white/10 bg-cw-dark/85 backdrop-blur-md transition-[max-height,opacity] duration-300 ease-out md:hidden ${
+        // Overlays the page (out of flow) so opening/closing it never shifts the
+        // document — otherwise a section link would land off by the panel height.
+        className={`absolute inset-x-0 top-full overflow-hidden border-t border-white/10 bg-cw-dark/95 backdrop-blur-md transition-[max-height,opacity] duration-300 ease-out md:hidden ${
           open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <ul className="mx-auto flex w-full max-w-[85rem] flex-col gap-1 px-6 py-4 sm:px-10">
           {nav.map((item) => {
-            const active = isActive(pathname, item.href)
+            const active = isActive(pathname, item.href, section)
             return (
               <li key={item.href}>
-                <Link
+                <HashLink
                   href={item.href}
                   onClick={() => setOpen(false)}
                   className={`flex items-center justify-between rounded-lg px-3 py-3 text-base font-medium transition-colors ${
@@ -161,25 +208,35 @@ export function SiteHeader() {
                       ? "bg-white/5 text-white"
                       : "text-gray-300 hover:bg-white/5 hover:text-white"
                   }`}
-                  aria-current={active ? "page" : undefined}
+                  aria-current={active ? (item.href.includes("#") ? "location" : "page") : undefined}
                 >
                   <span>{item.label}</span>
                   {active && <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />}
-                </Link>
+                </HashLink>
               </li>
             )
           })}
           <li className="mt-2">
-            <Link
+            <HashLink
               href="/#contact"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10"
+              className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10"
             >
+              <PingDot size="h-1.5 w-1.5" />
               Contact
-            </Link>
+            </HashLink>
           </li>
         </ul>
       </div>
+
+      {/* Scroll progress */}
+      <div
+        ref={progressRef}
+        className={`absolute -bottom-px left-0 w-0 bg-linear-to-r from-sky-400 via-purple-500 to-pink-500 shadow-[0_0_12px_rgba(168,85,247,0.8)] ${
+          isArticle ? "h-0.5" : "h-px"
+        }`}
+        aria-hidden
+      />
     </header>
   )
 }

@@ -27,55 +27,18 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Blog markdown: pill style for inline `code` only — not `pre > code` (fenced blocks). */
-.blog-md.prose :where(:not(pre) > code) {
-  border-radius: 0.375rem;
-  background-color: rgb(255 255 255 / 0.1);
-  padding: 0.125rem 0.375rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 400;
+/* Home entrance timeline starts after the starfield's warp intro. */
+:root {
+  --intro: 1.5s;
 }
 
-.blog-md.prose pre code {
-  background-color: transparent;
-  padding: 0;
-  border-radius: 0;
-  font-size: inherit;
-  line-height: inherit;
-  font-weight: inherit;
-  color: inherit;
-  box-shadow: none;
-}
-
-.blog-md.prose pre code::before,
-.blog-md.prose pre code::after {
-  content: none;
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --intro: 0.1s;
+  }
 }
 
 /* ── Marketing atmosphere animations ── */
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.25; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.35); }
-}
-
-@keyframes shoot {
-  0% { opacity: 0; transform: translateX(0) translateY(0); }
-  5% { opacity: 1; }
-  20% { opacity: 0; transform: translateX(-200px) translateY(-120px); }
-  100% { opacity: 0; transform: translateX(-200px) translateY(-120px); }
-}
-
-@keyframes fade-slide-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fade-slide-left {
-  from { opacity: 0; transform: translateX(32px); }
-  to { opacity: 1; transform: translateX(0); }
-}
 
 @keyframes text-shimmer {
   0% { background-position: 0% 50%; }
@@ -84,7 +47,7 @@ body {
 
 @keyframes nebula-drift {
   0%, 100% { transform: scale(1.15) translate3d(0, 0, 0); }
-  50% { transform: scale(1.18) translate3d(-14px, 8px, 0); }
+  50% { transform: scale(1.2) translate3d(-18px, 10px, 0); }
 }
 
 @keyframes hue-shift {
@@ -98,23 +61,65 @@ body {
   66% { transform: translate3d(-20px, 24px, 0) scale(0.95); }
 }
 
-@keyframes comet {
-  0% { opacity: 0; transform: rotate(var(--comet-angle, 205deg)) translateX(0); }
-  8% { opacity: 1; }
-  45% { opacity: 1; }
-  60% { opacity: 0; transform: rotate(var(--comet-angle, 205deg)) translateX(-280px); }
-  100% { opacity: 0; transform: rotate(var(--comet-angle, 205deg)) translateX(-280px); }
+@keyframes orbit {
+  from { transform: rotateX(74deg) rotateZ(0deg); }
+  to { transform: rotateX(74deg) rotateZ(360deg); }
 }
 
-@keyframes const-pulse {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.55; }
+@keyframes orbit-in {
+  from { opacity: 0; scale: 0.6; }
+  to { opacity: 1; scale: 1; }
 }
 
-@keyframes scroll-dot {
-  0% { opacity: 0; transform: translateY(0); }
-  30% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(14px); }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── Shared page motion ── */
+
+@keyframes line-up {
+  from { transform: translateY(105%); filter: blur(10px); opacity: 0; }
+  to { transform: translateY(0); filter: blur(0); opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tile-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes shimmer-bar {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Also used with custom durations via animate-[spin_40s_…] / animate-[ping_1.4s_…]. */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* Brand gradient text, shimmering. */
+.text-shimmer {
+  background-image: linear-gradient(90deg, #38bdf8 0%, #a855f7 35%, #ec4899 70%, #38bdf8 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-shimmer 6s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
