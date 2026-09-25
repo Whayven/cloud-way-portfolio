@@ -11,7 +11,7 @@ import { SiteFooter } from "@/components/site/site-footer"
 import { SiteHeader } from "@/components/site/site-header"
 import { prisma } from "@/lib/db"
 import { ContentStatus } from "@/lib/generated/prisma/client"
-import { formatDate, readingMinutes } from "@/lib/utils"
+import { formatDate, readingTime } from "@/lib/utils"
 import { BlogBody } from "./blog-body"
 
 const ARTICLE_ID = "article-body"
@@ -23,7 +23,7 @@ export async function generateMetadata({
 }) {
   const { slug } = await params
   const post = await prisma.blogPost.findUnique({
-    where: { slug },
+    where: { slug, status: ContentStatus.published },
     select: { title: true, excerpt: true },
   })
   if (!post) return { title: "Post Not Found" }
@@ -46,7 +46,7 @@ export default async function BlogPostPage({
   if (!post) notFound()
 
   const url = `https://cloud-way.dev/blog/${post.slug}`
-  const minutes = readingMinutes(post.body)
+  const minutes = readingTime(post.body)
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-cw-dark text-white">

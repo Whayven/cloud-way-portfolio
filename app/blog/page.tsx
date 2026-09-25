@@ -11,7 +11,7 @@ import { SpotlightLink } from "@/components/site/spotlight-link"
 import { postGradient } from "@/lib/cover-art"
 import { prisma } from "@/lib/db"
 import { ContentStatus } from "@/lib/generated/prisma/client"
-import { formatDate, readingMinutes } from "@/lib/utils"
+import { formatDate, readingTime } from "@/lib/utils"
 
 export const metadata = {
   title: "Blog",
@@ -172,7 +172,7 @@ export default async function BlogPage() {
     },
   })
 
-  const posts: PostSummary[] = rows.map(({ body, ...p }) => ({ ...p, minutes: readingMinutes(body) }))
+  const posts: PostSummary[] = rows.map(({ body, ...p }) => ({ ...p, minutes: readingTime(body) }))
   const [featured, ...rest] = posts
 
   return (
