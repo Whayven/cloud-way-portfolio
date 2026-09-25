@@ -1,8 +1,8 @@
 "use client"
 
 import { useActionState, useEffect, useRef } from "react"
-import { FadeIn } from "@/components/site/animated-section"
 import { PageEyebrow } from "@/components/site/page-eyebrow"
+import { Reveal } from "@/components/site/reveal"
 import { submitContactForm, type ContactFormState } from "@/app/actions/contact"
 
 const initial: ContactFormState = { success: false }
@@ -10,7 +10,7 @@ const initial: ContactFormState = { success: false }
 const labelCls =
   "block text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400"
 const inputCls =
-  "mt-2 block w-full rounded-xl border-0 bg-white/5 px-3.5 py-2.5 text-sm text-white shadow-sm ring-1 ring-white/15 transition placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500/60"
+  "mt-2 block w-full rounded-xl border-0 bg-white/5 px-3.5 py-[11px] text-sm text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)] outline-none transition-[box-shadow,background-color] duration-200 placeholder:text-gray-500 focus:bg-white/[0.07] focus:shadow-[inset_0_0_0_1.5px_rgba(192,132,252,0.8),0_0_0_4px_rgba(168,85,247,0.15)]"
 
 const details = [
   {
@@ -37,21 +37,21 @@ export function ContactSection() {
   }, [state.success])
 
   return (
-    <section id="contact" className="relative border-t border-white/10 py-24 sm:py-32">
+    <section id="contact" className="relative scroll-mt-24 border-t border-white/[0.08] py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-2">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr]">
-          <FadeIn>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] gap-14">
+          <Reveal>
             <div>
-              <PageEyebrow>Start a project</PageEyebrow>
+              <PageEyebrow align="start">Start a project</PageEyebrow>
               <h2
-                className="text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl"
-                style={{ textWrap: "balance" }}
+                className="font-semibold leading-[1.02] tracking-[-0.035em] text-white"
+                style={{ fontSize: "clamp(40px, 4.5vw, 56px)" }}
               >
                 Tell us what you&apos;re
                 <br />
                 building.
               </h2>
-              <p className="mt-5 max-w-lg text-base leading-relaxed text-gray-400 sm:text-lg">
+              <p className="mt-5 max-w-lg text-[17px] leading-[1.65] text-gray-400">
                 We read every message. Typical response within one business day.
               </p>
 
@@ -77,20 +77,23 @@ export function ContactSection() {
                 ))}
               </dl>
             </div>
-          </FadeIn>
+          </Reveal>
 
-          <FadeIn index={1}>
+          <Reveal index={1}>
             <form
               ref={formRef}
               action={action}
-              className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl sm:p-10"
+              className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-2xl sm:p-10"
             >
               <div
-                className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full opacity-60 blur-3xl"
-                style={{ background: "radial-gradient(circle, rgba(168,85,247,0.4), transparent 70%)" }}
+                className="pointer-events-none absolute -right-20 -top-20 h-[260px] w-[260px] rounded-full opacity-60 blur-[64px]"
+                style={{
+                  background: "radial-gradient(circle, rgba(168,85,247,0.45), transparent 70%)",
+                  animation: "aurora 18s ease-in-out infinite",
+                }}
               />
               {state.success ? (
-                <div className="relative py-12 text-center">
+                <div className="relative py-[72px] text-center motion-safe:animate-[fade-up_0.7s_var(--ease-spring)_both]">
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-emerald-400/40 bg-emerald-500/10">
                     <svg
                       className="h-6 w-6 text-emerald-400"
@@ -186,7 +189,7 @@ export function ContactSection() {
                     <button
                       type="submit"
                       disabled={pending}
-                      className="relative w-full overflow-hidden rounded-xl bg-linear-to-r from-purple-600 to-fuchsia-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 disabled:opacity-60"
+                      className="relative w-full cursor-pointer overflow-hidden rounded-xl bg-[linear-gradient(90deg,#9333ea,#d946ef,#9333ea)] bg-size-[200%_100%] bg-left px-4 py-[13px] text-sm font-semibold text-white transition-[background-position,box-shadow] duration-600 hover:bg-right hover:shadow-[0_0_30px_rgba(217,70,239,0.45)] disabled:cursor-default disabled:opacity-60"
                     >
                       <span className="relative z-10">
                         {pending ? "Sending…" : "Let's talk →"}
@@ -196,7 +199,7 @@ export function ContactSection() {
                 </div>
               )}
             </form>
-          </FadeIn>
+          </Reveal>
         </div>
       </div>
     </section>

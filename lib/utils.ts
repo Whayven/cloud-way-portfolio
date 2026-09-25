@@ -7,6 +7,12 @@ export function slugify(text: string): string {
     .trim()
 }
 
+/** Estimated reading time in minutes for a markdown body (~220 wpm). */
+export function readingMinutes(markdown: string): number {
+  const words = markdown.trim().split(/\s+/).filter(Boolean).length
+  return Math.max(1, Math.round(words / 220))
+}
+
 export function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {
     month: "short",
